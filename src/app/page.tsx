@@ -130,6 +130,35 @@ export default function HomePage() {
   const countPending = invoices.filter((i) => i.status === "En attente").length;
   const countUnpaid = invoices.filter((i) => i.status === "Impayée").length;
 
+  const handlePlanCheckout = async (plan: "starter" | "pro" | "business") => {
+    if (plan === "starter") {
+      window.location.href = "/login?mode=signup&plan=starter";
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/checkout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ plan }),
+      });
+
+      const data = await response.json();
+
+      if (data?.url) {
+        window.location.href = data.url;
+        return;
+      }
+
+      throw new Error("Aucune URL de paiement renvoyée.");
+    } catch (error) {
+      console.error("Checkout error:", error);
+      window.location.href = `/login?mode=signup&plan=${plan}`;
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#F6F8FA] dark:bg-[#0B1120] text-slate-800 dark:text-slate-100 transition-colors duration-200">
       
@@ -521,9 +550,9 @@ export default function HomePage() {
                   <li>✔ Export PDF</li>
                 </ul>
               </div>
-              <Link href="/login" className="mt-8">
-                <Button variant="outline" className="w-full">Commencer Gratuitement</Button>
-              </Link>
+              <div className="mt-8">
+                <Button variant="outline" className="w-full" onClick={() => handlePlanCheckout("starter")}>Commencer Gratuitement</Button>
+              </div>
             </div>
 
             <div data-reveal className="reveal-item relative rounded-3xl p-8 sm:p-10 bg-white dark:bg-slate-800 border-2 border-brand-500 shadow-xl flex flex-col justify-between -translate-y-2 transition-all duration-500 hover:-translate-y-3 hover:scale-[1.01] hover:shadow-2xl">
@@ -543,9 +572,9 @@ export default function HomePage() {
                   <li>✔ Support prioritaire</li>
                 </ul>
               </div>
-              <Link href="/login" className="mt-8">
-                <Button className="w-full">Choisir le Plan Pro</Button>
-              </Link>
+              <div className="mt-8">
+                <Button className="w-full" onClick={() => handlePlanCheckout("pro")}>Choisir le Plan Pro</Button>
+              </div>
             </div>
 
             <div data-reveal className="reveal-item rounded-3xl p-8 bg-[#F8FAFC] dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 flex flex-col justify-between transition-all duration-500 hover:-translate-y-2 hover:scale-[1.01] hover:shadow-xl dark:hover:border-brand-800">
@@ -561,9 +590,9 @@ export default function HomePage() {
                   <li>✔ Tableau de bord KPI complet</li>
                 </ul>
               </div>
-              <Link href="/login" className="mt-8">
-                <Button variant="outline" className="w-full">Choisir Business</Button>
-              </Link>
+              <div className="mt-8">
+                <Button variant="outline" className="w-full" onClick={() => handlePlanCheckout("business")}>Choisir Business</Button>
+              </div>
             </div>
           </div>
         </div>

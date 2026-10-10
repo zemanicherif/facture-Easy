@@ -5,12 +5,17 @@ export const dynamic = 'force-dynamic';
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string; success?: string; mode?: string }>;
+  searchParams: Promise<{ error?: string; success?: string; mode?: string; plan?: string }>;
 }) {
   const params = await searchParams;
   const isSignupMode = params?.mode === 'signup';
   const isLoginMode = params?.mode === 'login';
   const isSuccessMessage = params?.error?.startsWith('Compte créé');
+  const selectedPlan = params?.plan ?? 'starter';
+  const planLabel =
+    selectedPlan === 'pro' ? 'Plan Pro' :
+    selectedPlan === 'business' ? 'Plan Business' :
+    'Plan Découverte';
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-[#0a1628] to-slate-900 p-4 relative overflow-hidden">
@@ -39,11 +44,17 @@ export default async function LoginPage({
           </h1>
           <p className="text-slate-400 text-sm mb-6">
             {isSignupMode
-              ? 'Démarrez gratuitement et créez votre compte.'
+              ? `Démarrez avec le ${planLabel} et créez votre compte.`
               : isLoginMode
                 ? 'Connectez-vous pour accéder à votre espace.'
                 : 'Connectez-vous ou créez votre compte gratuit'}
           </p>
+
+          {isSignupMode && (
+            <div className="mb-5 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-200">
+              Offre sélectionnée : <span className="font-bold">{planLabel}</span>
+            </div>
+          )}
 
           {/* Message d'erreur / succès */}
           {params?.error && (
