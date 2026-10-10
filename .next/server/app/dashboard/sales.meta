@@ -1,0 +1,15 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/dashboard/layout,_N_T_/dashboard/sales/layout,_N_T_/dashboard/sales/page,_N_T_/dashboard/sales"
+  },
+  "routeCache": {
+    "key": "/route-cache/APP_PAGE/b85f49e90bb5443c807ff4022e05da54ab5ee14b61ae5f3c5d1e4aa7c2bf0c7f/$/dashboard/sales",
+    "owner": {
+      "kind": "APP_PAGE",
+      "sourceRoute": "/dashboard/sales/page"
+    },
+    "isFallback": false
+  }
+}

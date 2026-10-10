@@ -1,0 +1,200 @@
+import { Invoice, Client } from "./types";
+
+export const initialClients: Client[] = [
+  {
+    id: "CLI-01",
+    name: "Kamisato Ayaka",
+    email: "ayaka.k@dakar-digital.sn",
+    phone: "+221 77 123 45 67",
+    city: "Dakar",
+    country: "Sénégal",
+    nineaOrRccm: "SN-DKR-2023-B-1420",
+    totalInvoiced: 1534000,
+    totalPaid: 1534000,
+    invoicesCount: 2,
+  },
+  {
+    id: "CLI-02",
+    name: "Kamisato Ayato",
+    email: "ayato@abidjan-tech.ci",
+    phone: "+225 07 88 99 00 11",
+    city: "Abidjan",
+    country: "Côte d'Ivoire",
+    nineaOrRccm: "CI-ABJ-2022-M-881",
+    totalInvoiced: 755200,
+    totalPaid: 377600,
+    invoicesCount: 2,
+  },
+  {
+    id: "CLI-03",
+    name: "Raiden Shogun",
+    email: "raiden@inazuma-consulting.com",
+    phone: "+221 78 990 12 34",
+    city: "Dakar",
+    country: "Sénégal",
+    nineaOrRccm: "SN-DKR-2021-A-099",
+    totalInvoiced: 2950000,
+    totalPaid: 2950000,
+    invoicesCount: 2,
+  },
+  {
+    id: "CLI-04",
+    name: "El Moulina SARL",
+    email: "contact@elmoulina.cm",
+    phone: "+237 690 11 22 33",
+    city: "Douala",
+    country: "Cameroun",
+    nineaOrRccm: "RC-DLA-2020-B-45",
+    totalInvoiced: 531000,
+    totalPaid: 0,
+    invoicesCount: 1,
+  },
+  {
+    id: "CLI-05",
+    name: "Falah Maulana",
+    email: "falah@sen-logistics.sn",
+    phone: "+221 70 333 44 55",
+    city: "Dakar",
+    country: "Sénégal",
+    nineaOrRccm: "SN-DKR-2024-B-9912",
+    totalInvoiced: 1050200,
+    totalPaid: 1050200,
+    invoicesCount: 1,
+  },
+  {
+    id: "CLI-06",
+    name: "Achmad Van",
+    email: "achmad@ivoire-build.ci",
+    phone: "+225 05 44 33 22 11",
+    city: "Abidjan",
+    country: "Côte d'Ivoire",
+    nineaOrRccm: "CI-ABJ-2023-B-501",
+    totalInvoiced: 1736960,
+    totalPaid: 0,
+    invoicesCount: 1,
+  }
+];
+
+export const initialInvoices: Invoice[] = [
+  {
+    id: "inv-1",
+    invoiceNumber: "INV-2026-001",
+    clientId: "CLI-01",
+    clientName: "Kamisato Ayaka",
+    clientEmail: "ayaka.k@dakar-digital.sn",
+    clientPhone: "+221 77 123 45 67",
+    clientAddress: "Almadies, Dakar, Sénégal",
+    date: "04 Fév 2026",
+    dueDate: "11 Fév 2026",
+    items: [
+      { id: "1", description: "Design UI/UX Application Mobile", quantity: 1, unitPrice: 450000, total: 450000 },
+      { id: "2", description: "Intégration Next.js & Tailwind", quantity: 1, unitPrice: 200000, total: 200000 }
+    ],
+    subtotalHT: 650000,
+    vatRate: 0.18,
+    vatAmount: 117000,
+    totalTTC: 767000,
+    status: "Payée",
+    notes: "Paiement reçu via Virement Bancaire."
+  },
+  {
+    id: "inv-2",
+    invoiceNumber: "INV-2026-002",
+    clientId: "CLI-02",
+    clientName: "Kamisato Ayato",
+    clientEmail: "ayato@abidjan-tech.ci",
+    clientPhone: "+225 07 88 99 00 11",
+    clientAddress: "Plateau, Abidjan, Côte d'Ivoire",
+    date: "02 Fév 2026",
+    dueDate: "09 Fév 2026",
+    items: [
+      { id: "1", description: "Audit de Sécurité & Infrastructure Cloud", quantity: 1, unitPrice: 320000, total: 320000 }
+    ],
+    subtotalHT: 320000,
+    vatRate: 0.18,
+    vatAmount: 57600,
+    totalTTC: 377600,
+    status: "En attente",
+    notes: "Échéance à 7 jours. Paiement attendu par Wave ou Orange Money."
+  },
+  {
+    id: "inv-3",
+    invoiceNumber: "INV-2026-003",
+    clientId: "CLI-03",
+    clientName: "Raiden Shogun",
+    clientEmail: "raiden@inazuma-consulting.com",
+    clientPhone: "+221 78 990 12 34",
+    clientAddress: "Point E, Dakar, Sénégal",
+    date: "28 Jan 2026",
+    dueDate: "04 Fév 2026",
+    items: [
+      { id: "1", description: "Conseil Stratégique & Transformation Digitale", quantity: 5, unitPrice: 250000, total: 1250000 }
+    ],
+    subtotalHT: 1250000,
+    vatRate: 0.18,
+    vatAmount: 225000,
+    totalTTC: 1475000,
+    status: "Payée",
+    notes: "Facture réglée à la commande."
+  },
+  {
+    id: "inv-4",
+    invoiceNumber: "INV-2026-004",
+    clientId: "CLI-04",
+    clientName: "El Moulina SARL",
+    clientEmail: "contact@elmoulina.cm",
+    clientPhone: "+237 690 11 22 33",
+    clientAddress: "Bonanjo, Douala, Cameroun",
+    date: "25 Jan 2026",
+    dueDate: "01 Fév 2026",
+    items: [
+      { id: "1", description: "Maintenance Serveur & Sauvegardes", quantity: 3, unitPrice: 150000, total: 450000 }
+    ],
+    subtotalHT: 450000,
+    vatRate: 0.18,
+    vatAmount: 81000,
+    totalTTC: 531000,
+    status: "Impayée",
+    notes: "Relance effectuée par email le 02 Février."
+  },
+  {
+    id: "inv-5",
+    invoiceNumber: "INV-2026-005",
+    clientId: "CLI-05",
+    clientName: "Falah Maulana",
+    clientEmail: "falah@sen-logistics.sn",
+    clientPhone: "+221 70 333 44 55",
+    clientAddress: "Zone Industrielle, Dakar, Sénégal",
+    date: "20 Jan 2026",
+    dueDate: "27 Jan 2026",
+    items: [
+      { id: "1", description: "Déploiement Système de Tracking GPS", quantity: 1, unitPrice: 890000, total: 890000 }
+    ],
+    subtotalHT: 890000,
+    vatRate: 0.18,
+    vatAmount: 160200,
+    totalTTC: 1050200,
+    status: "Payée",
+    notes: "Payé par chèque certifié."
+  },
+  {
+    id: "inv-6",
+    invoiceNumber: "INV-2026-006",
+    clientId: "CLI-06",
+    clientName: "Achmad Van",
+    clientEmail: "achmad@ivoire-build.ci",
+    clientPhone: "+225 05 44 33 22 11",
+    clientAddress: "Cocody, Abidjan, Côte d'Ivoire",
+    date: "18 Jan 2026",
+    dueDate: "25 Jan 2026",
+    items: [
+      { id: "1", description: "Supervision BTP & Suivi de Chantier Tech", quantity: 1, unitPrice: 1472000, total: 1472000 }
+    ],
+    subtotalHT: 1472000,
+    vatRate: 0.18,
+    vatAmount: 264960,
+    totalTTC: 1736960,
+    status: "En attente",
+    notes: "Acompte de 50% attendu."
+  }
+];

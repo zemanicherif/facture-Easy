@@ -1,0 +1,1642 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Facture'Easy — Le SaaS de facturation moderne pour entrepreneurs africains</title>
+  <meta name="description" content="Créez des factures professionnelles en FCFA en 2 clics avec calcul automatique de la TVA 18%, suivi des paiements en temps réel et gestion client simplifiée." />
+  
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Tailwind Custom Config -->
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#ecfdf5',
+              100: '#d1fae5',
+              200: '#a7f3d0',
+              300: '#6ee7b7',
+              400: '#34d399',
+              500: '#10b981', // Emerald vibrant de la capture
+              600: '#059669',
+              700: '#047857',
+              800: '#065f46',
+              900: '#064e3b',
+              accent: '#3cd070'
+            },
+            surface: {
+              light: '#F5F7FA',
+              card: '#FFFFFF',
+              border: '#E8ECEF',
+              dark: '#0F172A',
+              darkCard: '#1E293B',
+              darkBorder: '#334155'
+            }
+          },
+          boxShadow: {
+            'subtle': '0 2px 8px -2px rgba(0, 0, 0, 0.05), 0 1px 4px -1px rgba(0, 0, 0, 0.03)',
+            'premium': '0 20px 40px -15px rgba(16, 185, 129, 0.12), 0 0 1px 1px rgba(0,0,0,0.04)',
+            'dashboard': '0 25px 60px -15px rgba(0, 0, 0, 0.08), 0 0 1px 1px rgba(0, 0, 0, 0.04)'
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #F1F5F9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #CBD5E1;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94A3B8;
+    }
+
+    /* Glow & Blur Effects */
+    .hero-glow {
+      background: radial-gradient(circle at 50% 0%, rgba(16, 185, 129, 0.15) 0%, rgba(245, 247, 250, 0) 70%);
+    }
+    .dark .hero-glow {
+      background: radial-gradient(circle at 50% 0%, rgba(16, 185, 129, 0.12) 0%, rgba(15, 23, 42, 0) 70%);
+    }
+
+    /* Magnetic Button & Interactive Micro-animations */
+    .btn-magnetic {
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
+    }
+    .btn-magnetic:hover {
+      transform: translateY(-2px);
+    }
+    .btn-magnetic:active {
+      transform: translateY(0px) scale(0.98);
+    }
+
+    /* Floating Card Animation */
+    @keyframes float-slow {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-8px); }
+    }
+    .animate-float {
+      animation: float-slow 6s ease-in-out infinite;
+    }
+
+    /* Status Badges Matching the SalesSync Style */
+    .badge-paid {
+      background-color: #D1FADF;
+      color: #027A48;
+    }
+    .badge-pending {
+      background-color: #E0F2FE;
+      color: #0284C7;
+    }
+    .badge-unpaid {
+      background-color: #FEE4E2;
+      color: #D92D20;
+    }
+
+    /* Tab Active Pill */
+    .tab-active {
+      background-color: #E6F8EE;
+      color: #059669;
+      font-weight: 600;
+    }
+    .dark .tab-active {
+      background-color: rgba(16, 185, 129, 0.2);
+      color: #34D399;
+    }
+  </style>
+</head>
+
+<body class="bg-[#F6F8FA] dark:bg-[#0B1120] text-slate-800 dark:text-slate-100 font-sans antialiased selection:bg-brand-500 selection:text-white transition-colors duration-300">
+
+  <!-- ========================================== -->
+  <!-- NAVIGATION BAR                             -->
+  <!-- ========================================== -->
+  <header class="sticky top-0 z-50 backdrop-blur-md bg-white/80 dark:bg-[#0F172A]/80 border-b border-slate-200/80 dark:border-slate-800/80 transition-colors">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <a href="#" class="flex items-center gap-3 group">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-brand-400 flex items-center justify-center text-white font-black text-xl shadow-lg shadow-brand-500/30 group-hover:scale-105 transition-transform">
+          ⚡
+        </div>
+        <div class="flex flex-col">
+          <span class="text-xl font-extrabold tracking-tight text-slate-900 dark:text-white flex items-center gap-1">
+            Facture'<span class="text-brand-500">Easy</span>
+          </span>
+          <span class="text-[10px] font-semibold tracking-wider text-slate-400 uppercase -mt-1">Vos factures en quelques clics.</span>
+        </div>
+      </a>
+
+      <!-- Desktop Nav Links -->
+      <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-600 dark:text-slate-300">
+        <a href="#problemes" class="hover:text-brand-600 dark:hover:text-brand-400 transition-colors">Problèmes</a>
+        <a href="#fonctionnalites" class="hover:text-brand-600 dark:hover:text-brand-400 transition-colors">Fonctionnalités</a>
+        <a href="#comment-ca-marche" class="hover:text-brand-600 dark:hover:text-brand-400 transition-colors">Comment ça marche</a>
+        <a href="#tarifs" class="hover:text-brand-600 dark:hover:text-brand-400 transition-colors">Tarifs</a>
+        <a href="#temoignages" class="hover:text-brand-600 dark:hover:text-brand-400 transition-colors">Témoignages</a>
+      </nav>
+
+      <!-- Action Buttons & Dark Mode Toggle -->
+      <div class="flex items-center gap-3">
+        <!-- Theme Toggle -->
+        <button id="themeToggle" class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition" aria-label="Toggle Theme">
+          <i data-lucide="moon" class="w-4 h-4 hidden dark:block"></i>
+          <i data-lucide="sun" class="w-4 h-4 block dark:hidden text-amber-500"></i>
+        </button>
+
+        <!-- CTA Demo Button -->
+        <a href="#live-demo" class="hidden sm:inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition btn-magnetic">
+          <i data-lucide="play-circle" class="w-4 h-4 text-brand-500"></i>
+          Voir la démo
+        </a>
+
+        <!-- Primary CTA -->
+        <button onclick="openModal('registerModal')" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-brand-500 hover:bg-brand-600 shadow-md shadow-brand-500/25 transition btn-magnetic">
+          <span>Commencer gratuitement</span>
+          <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================== -->
+  <!-- HERO SECTION                               -->
+  <!-- ========================================== -->
+  <section class="relative pt-12 pb-20 md:pt-20 md:pb-32 overflow-hidden hero-glow">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+      
+      <!-- Top Pill Badge -->
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-50 dark:bg-brand-950/60 border border-brand-200 dark:border-brand-800/60 text-brand-700 dark:text-brand-300 text-xs sm:text-sm font-semibold mb-8 shadow-sm">
+        <span class="flex h-2 w-2 rounded-full bg-brand-500 animate-pulse"></span>
+        <span>Conçu spécifiquement pour les entrepreneurs et PME d'Afrique</span>
+        <span class="text-brand-400 font-mono">FCFA / TVA 18%</span>
+      </div>
+
+      <!-- Main Headline -->
+      <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-slate-900 dark:text-white max-w-4xl mx-auto leading-[1.12]">
+        Fini le casse-tête des factures sur <span class="line-through text-slate-400 dark:text-slate-500 decoration-rose-500/60 decoration-4">Word</span> et <span class="line-through text-slate-400 dark:text-slate-500 decoration-rose-500/60 decoration-4">Excel</span>.
+      </h1>
+
+      <!-- Subtitle -->
+      <p class="mt-6 text-lg sm:text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto font-normal leading-relaxed">
+        <strong class="font-semibold text-slate-900 dark:text-white">Facture'Easy</strong> génère des factures professionnelles en FCFA en 2 clics, calcule la TVA à 18% automatiquement et suit vos paiements en direct.
+      </p>
+
+      <!-- CTAs -->
+      <div class="mt-9 flex flex-col sm:flex-row items-center justify-center gap-4">
+        <button onclick="openModal('registerModal')" class="w-full sm:w-auto px-8 py-4 rounded-2xl text-base font-bold text-white bg-brand-500 hover:bg-brand-600 shadow-xl shadow-brand-500/30 flex items-center justify-center gap-3 transition btn-magnetic">
+          <i data-lucide="sparkles" class="w-5 h-5"></i>
+          <span>Commencer gratuitement</span>
+        </button>
+
+        <a href="#live-demo" class="w-full sm:w-auto px-8 py-4 rounded-2xl text-base font-bold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-center gap-2 transition btn-magnetic">
+          <i data-lucide="play" class="w-4 h-4 text-brand-500 fill-brand-500"></i>
+          <span>Explorer le Dashboard interactif</span>
+        </a>
+      </div>
+
+      <!-- Trust Badges -->
+      <div class="mt-8 flex flex-wrap items-center justify-center gap-6 text-xs text-slate-500 dark:text-slate-400">
+        <div class="flex items-center gap-1.5">
+          <i data-lucide="check-circle-2" class="w-4 h-4 text-brand-500"></i>
+          <span>Aucune carte bancaire requise</span>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <i data-lucide="check-circle-2" class="w-4 h-4 text-brand-500"></i>
+          <span>Conforme SYSCOHADA & UEMOA / CEMAC</span>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <i data-lucide="check-circle-2" class="w-4 h-4 text-brand-500"></i>
+          <span>Export PDF & Envoi WhatsApp instantané</span>
+        </div>
+      </div>
+
+      <!-- ========================================== -->
+      <!-- DASHBOARD PREVIEW / MOCKUP (STYLE EXACT)   -->
+      <!-- ========================================== -->
+      <div id="live-demo" class="mt-16 sm:mt-20 relative max-w-6xl mx-auto text-left">
+        
+        <!-- Browser Window Mockup Wrapper -->
+        <div class="rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-dashboard overflow-hidden transition-all duration-300">
+          
+          <!-- Browser Header Bar (SalesSync inspired) -->
+          <div class="px-6 py-3.5 bg-slate-50/90 dark:bg-slate-900/90 border-b border-slate-200/80 dark:border-slate-800 flex items-center justify-between text-xs text-slate-500">
+            <!-- Window dots -->
+            <div class="flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full bg-[#FF5F56] border border-[#E0443E]"></span>
+              <span class="w-3 h-3 rounded-full bg-[#FFBD2E] border border-[#DEA123]"></span>
+              <span class="w-3 h-3 rounded-full bg-[#27C93F] border border-[#1AAB29]"></span>
+            </div>
+
+            <!-- URL Bar -->
+            <div class="hidden sm:flex items-center justify-center gap-2 px-6 py-1.5 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-inner text-slate-600 dark:text-slate-300 font-mono text-[11px] w-80">
+              <i data-lucide="lock" class="w-3 h-3 text-brand-500"></i>
+              <span>app.factureasy.com/dashboard</span>
+              <i data-lucide="rotate-cw" class="w-3 h-3 text-slate-400 ml-auto"></i>
+            </div>
+
+            <!-- Browser Controls Placeholder -->
+            <div class="flex items-center gap-3 text-slate-400">
+              <i data-lucide="sidebar" class="w-4 h-4 cursor-pointer hover:text-slate-600"></i>
+              <i data-lucide="share" class="w-4 h-4 cursor-pointer hover:text-slate-600"></i>
+              <i data-lucide="plus" class="w-4 h-4 cursor-pointer hover:text-slate-600"></i>
+            </div>
+          </div>
+
+          <!-- Application Interface Layout (Sidebar + Main Area) -->
+          <div class="grid grid-cols-1 lg:grid-cols-12 min-h-[640px] bg-[#F8FAFC] dark:bg-[#090E17]">
+            
+            <!-- 1. LEFT SIDEBAR (SalesSync Style) -->
+            <aside class="hidden lg:block lg:col-span-3 xl:col-span-2 bg-white dark:bg-slate-900 border-r border-slate-200/80 dark:border-slate-800 p-5 flex flex-col justify-between">
+              <div>
+                <!-- Brand in App -->
+                <div class="flex items-center gap-2.5 mb-8 px-2">
+                  <div class="w-8 h-8 rounded-lg bg-brand-500 flex items-center justify-center text-white font-bold text-sm">
+                    ⚡
+                  </div>
+                  <span class="font-bold text-base text-slate-900 dark:text-white tracking-tight">Facture'Easy</span>
+                </div>
+
+                <!-- Nav Group 1: Main Menu -->
+                <div class="mb-6">
+                  <p class="text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-2 px-2">Menu Principal</p>
+                  <ul class="space-y-1 text-sm font-medium">
+                    <li>
+                      <a href="javascript:void(0)" class="flex items-center gap-3 px-3 py-2 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                        <i data-lucide="layout-grid" class="w-4 h-4"></i>
+                        <span>Vue d'ensemble</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="javascript:void(0)" class="flex items-center gap-3 px-3 py-2 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                        <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
+                        <span>Analytiques</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="javascript:void(0)" class="flex items-center gap-3 px-3 py-2 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                        <i data-lucide="package" class="w-4 h-4"></i>
+                        <span>Articles / Services</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="javascript:void(0)" class="flex items-center gap-3 px-3 py-2 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                        <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                        <span>Ventes</span>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+
+                <!-- Nav Group 2: Transactions -->
+                <div class="mb-6">
+                  <p class="text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-2 px-2">Facturation</p>
+                  <ul class="space-y-1 text-sm font-medium">
+                    <li>
+                      <a href="javascript:void(0)" class="flex items-center gap-3 px-3 py-2 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                        <i data-lucide="credit-card" class="w-4 h-4"></i>
+                        <span>Paiements</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="javascript:void(0)" class="flex items-center gap-3 px-3 py-2 rounded-xl tab-active transition">
+                        <i data-lucide="receipt" class="w-4 h-4 text-brand-600 dark:text-brand-400"></i>
+                        <span class="font-bold">Factures</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="javascript:void(0)" class="flex items-center gap-3 px-3 py-2 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                        <i data-lucide="users" class="w-4 h-4"></i>
+                        <span>Clients</span>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+
+                <!-- Nav Group 3: General -->
+                <div>
+                  <p class="text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-2 px-2">Général</p>
+                  <ul class="space-y-1 text-sm font-medium">
+                    <li>
+                      <a href="javascript:void(0)" class="flex items-center gap-3 px-3 py-2 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                        <i data-lucide="bell" class="w-4 h-4"></i>
+                        <span>Notifications</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="javascript:void(0)" class="flex items-center gap-3 px-3 py-2 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                        <i data-lucide="settings" class="w-4 h-4"></i>
+                        <span>Paramètres</span>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <!-- Sidebar Bottom: Mode Sombre Switch -->
+              <div class="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs px-2 text-slate-600 dark:text-slate-400">
+                <div class="flex items-center gap-2">
+                  <i data-lucide="moon" class="w-4 h-4"></i>
+                  <span>Dark Mode</span>
+                </div>
+                <div class="w-8 h-4 bg-brand-500 rounded-full flex items-center justify-end p-0.5 cursor-pointer">
+                  <div class="w-3 h-3 bg-white rounded-full shadow-sm"></div>
+                </div>
+              </div>
+            </aside>
+
+            <!-- 2. MAIN DASHBOARD CONTENT (Direct Inspiration from the provided UI image) -->
+            <main class="col-span-1 lg:col-span-9 xl:col-span-10 p-5 sm:p-7 space-y-6 overflow-x-hidden">
+              
+              <!-- Dashboard Topbar -->
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <h2 class="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Vue d'ensemble</h2>
+                  <p class="text-xs text-slate-500">Bienvenue sur votre espace de facturation en FCFA</p>
+                </div>
+
+                <!-- Topbar Search & User Actions -->
+                <div class="flex flex-wrap items-center gap-3">
+                  <!-- Search bar with Cmd+K -->
+                  <div class="relative flex-1 sm:w-64">
+                    <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                    <input 
+                      id="invoiceSearchInput"
+                      type="text" 
+                      placeholder="Rechercher client, ID..." 
+                      class="w-full pl-9 pr-10 py-2 rounded-xl text-xs bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition"
+                      onkeyup="filterInvoiceTable()"
+                    />
+                    <span class="absolute right-2.5 top-1/2 -translate-y-1/2 px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-700 text-[10px] font-mono text-slate-400 border border-slate-200 dark:border-slate-600">⌘K</span>
+                  </div>
+
+                  <!-- Date Selector Pill -->
+                  <div class="flex items-center gap-2 px-3 py-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-300">
+                    <i data-lucide="calendar" class="w-3.5 h-3.5 text-slate-400"></i>
+                    <span>Fév 2026</span>
+                    <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-slate-400"></i>
+                  </div>
+
+                  <!-- User Profile -->
+                  <div class="flex items-center gap-2.5 pl-2">
+                    <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-brand-600 to-amber-500 flex items-center justify-center text-white font-bold text-xs ring-2 ring-white dark:ring-slate-800 shadow">
+                      AD
+                    </div>
+                    <div class="hidden sm:block text-left">
+                      <p class="text-xs font-bold text-slate-900 dark:text-white leading-tight">Amadou Diallo</p>
+                      <p class="text-[10px] text-slate-400 font-medium">Directeur Général</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 4 KPI Cards (Matching exact SalesSync layout with FCFA) -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+                
+                <!-- KPI 1: Chiffre d'Affaires -->
+                <div class="bg-white dark:bg-slate-800/90 rounded-2xl p-5 border border-slate-200/80 dark:border-slate-700/60 shadow-subtle hover:shadow-md transition">
+                  <div class="flex items-center justify-between text-slate-500 text-xs font-semibold">
+                    <span>Total Encaissé</span>
+                    <button class="text-slate-400 hover:text-slate-600"><i data-lucide="more-horizontal" class="w-4 h-4"></i></button>
+                  </div>
+                  <div class="mt-3 flex items-baseline justify-between">
+                    <div class="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                      7 450 000 <span class="text-xs font-bold text-brand-600 dark:text-brand-400">FCFA</span>
+                    </div>
+                  </div>
+                  <div class="mt-2 flex items-center gap-1.5 text-xs">
+                    <span class="inline-flex items-center gap-0.5 text-brand-600 dark:text-brand-400 font-bold bg-brand-50 dark:bg-brand-950/60 px-1.5 py-0.5 rounded text-[11px]">
+                      <i data-lucide="trending-up" class="w-3 h-3"></i> +12.4%
+                    </span>
+                    <span class="text-slate-400 text-[11px]">vs mois dernier</span>
+                  </div>
+                </div>
+
+                <!-- KPI 2: Total Clients -->
+                <div class="bg-white dark:bg-slate-800/90 rounded-2xl p-5 border border-slate-200/80 dark:border-slate-700/60 shadow-subtle hover:shadow-md transition">
+                  <div class="flex items-center justify-between text-slate-500 text-xs font-semibold">
+                    <span>Total Clients Actifs</span>
+                    <button class="text-slate-400 hover:text-slate-600"><i data-lucide="more-horizontal" class="w-4 h-4"></i></button>
+                  </div>
+                  <div class="mt-3 flex items-baseline justify-between">
+                    <div class="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                      142
+                    </div>
+                  </div>
+                  <div class="mt-2 flex items-center gap-1.5 text-xs">
+                    <span class="inline-flex items-center gap-0.5 text-brand-600 dark:text-brand-400 font-bold bg-brand-50 dark:bg-brand-950/60 px-1.5 py-0.5 rounded text-[11px]">
+                      <i data-lucide="trending-up" class="w-3 h-3"></i> +5.1%
+                    </span>
+                    <span class="text-slate-400 text-[11px]">8 nouveaux ce mois</span>
+                  </div>
+                </div>
+
+                <!-- KPI 3: TVA 18% Collectée -->
+                <div class="bg-white dark:bg-slate-800/90 rounded-2xl p-5 border border-slate-200/80 dark:border-slate-700/60 shadow-subtle hover:shadow-md transition">
+                  <div class="flex items-center justify-between text-slate-500 text-xs font-semibold">
+                    <span>TVA 18% Collectée</span>
+                    <button class="text-slate-400 hover:text-slate-600"><i data-lucide="more-horizontal" class="w-4 h-4"></i></button>
+                  </div>
+                  <div class="mt-3 flex items-baseline justify-between">
+                    <div class="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                      1 136 440 <span class="text-xs font-bold text-slate-500">FCFA</span>
+                    </div>
+                  </div>
+                  <div class="mt-2 flex items-center gap-1.5 text-xs">
+                    <span class="inline-flex items-center gap-0.5 text-brand-600 dark:text-brand-400 font-bold bg-brand-50 dark:bg-brand-950/60 px-1.5 py-0.5 rounded text-[11px]">
+                      <i data-lucide="check" class="w-3 h-3"></i> 100% Conforme
+                    </span>
+                    <span class="text-slate-400 text-[11px]">Déclaration prête</span>
+                  </div>
+                </div>
+
+                <!-- KPI 4: Factures en Attente -->
+                <div class="bg-white dark:bg-slate-800/90 rounded-2xl p-5 border border-slate-200/80 dark:border-slate-700/60 shadow-subtle hover:shadow-md transition">
+                  <div class="flex items-center justify-between text-slate-500 text-xs font-semibold">
+                    <span>En attente de paiement</span>
+                    <button class="text-slate-400 hover:text-slate-600"><i data-lucide="more-horizontal" class="w-4 h-4"></i></button>
+                  </div>
+                  <div class="mt-3 flex items-baseline justify-between">
+                    <div class="text-2xl font-extrabold text-amber-500 tracking-tight">
+                      1 850 000 <span class="text-xs font-bold text-slate-500">FCFA</span>
+                    </div>
+                  </div>
+                  <div class="mt-2 flex items-center gap-1.5 text-xs">
+                    <span class="inline-flex items-center gap-0.5 text-amber-600 dark:text-amber-400 font-bold bg-amber-50 dark:bg-amber-950/60 px-1.5 py-0.5 rounded text-[11px]">
+                      <i data-lucide="clock" class="w-3 h-3"></i> 4 factures
+                    </span>
+                    <span class="text-slate-400 text-[11px]">Relances prêtes</span>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- Invoices Table Section (SalesSync Style Exact Replica) -->
+              <div class="bg-white dark:bg-slate-800/90 rounded-2xl border border-slate-200/80 dark:border-slate-700/60 shadow-subtle p-5">
+                
+                <!-- Table Header: Title + Switch + Add Invoice Button -->
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100 dark:border-slate-700/50">
+                  <div class="flex items-center gap-3">
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white">Factures Récentes</h3>
+                    <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300" id="totalBadgeCount">6 factures</span>
+                  </div>
+
+                  <div class="flex items-center gap-3">
+                    <!-- Period Toggle -->
+                    <div class="hidden sm:flex items-center gap-2 text-xs font-medium text-slate-500">
+                      <span>Mensuel</span>
+                      <div class="w-8 h-4 bg-slate-200 dark:bg-slate-700 rounded-full p-0.5 flex items-center justify-start cursor-pointer">
+                        <div class="w-3 h-3 bg-white dark:bg-slate-400 rounded-full shadow"></div>
+                      </div>
+                    </div>
+
+                    <!-- + Add Invoice Button (Vibrant Green like capture) -->
+                    <button onclick="openModal('createInvoiceModal')" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-white bg-brand-500 hover:bg-brand-600 shadow-md shadow-brand-500/25 transition btn-magnetic">
+                      <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                      <span>Créer une facture</span>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Filter Pills: All, Paid, Pending, Unpaid (Like capture) -->
+                <div class="flex flex-wrap items-center justify-between gap-3 py-4">
+                  <div class="flex flex-wrap items-center gap-2 text-xs font-semibold">
+                    <button onclick="filterStatus('all')" id="btn-all" class="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-white font-bold flex items-center gap-1.5 transition">
+                      <span>Toutes</span>
+                      <span class="px-1.5 py-0.2 rounded-full bg-brand-500 text-white text-[10px]" id="count-all">6</span>
+                    </button>
+                    <button onclick="filterStatus('Payée')" id="btn-paid" class="px-3 py-1.5 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center gap-1.5 transition">
+                      <span>Payées</span>
+                      <span class="px-1.5 py-0.2 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 text-[10px]" id="count-paid">3</span>
+                    </button>
+                    <button onclick="filterStatus('En attente')" id="btn-pending" class="px-3 py-1.5 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center gap-1.5 transition">
+                      <span>En attente</span>
+                      <span class="px-1.5 py-0.2 rounded-full bg-sky-100 text-sky-800 dark:bg-sky-950 dark:text-sky-300 text-[10px]" id="count-pending">2</span>
+                    </button>
+                    <button onclick="filterStatus('Impayée')" id="btn-unpaid" class="px-3 py-1.5 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center gap-1.5 transition">
+                      <span>Impayées</span>
+                      <span class="px-1.5 py-0.2 rounded-full bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300 text-[10px]" id="count-unpaid">1</span>
+                    </button>
+                  </div>
+
+                  <!-- Quick table controls -->
+                  <div class="flex items-center gap-2 text-slate-400 text-xs">
+                    <span class="hidden md:inline text-slate-400">Afficher 10 lignes</span>
+                    <button class="p-1.5 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700"><i data-lucide="layout-grid" class="w-3.5 h-3.5"></i></button>
+                    <button class="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200"><i data-lucide="list" class="w-3.5 h-3.5"></i></button>
+                    <button class="p-1.5 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700"><i data-lucide="filter" class="w-3.5 h-3.5"></i></button>
+                  </div>
+                </div>
+
+                <!-- Table Container -->
+                <div class="overflow-x-auto">
+                  <table class="w-full text-left text-xs text-slate-600 dark:text-slate-300">
+                    <thead class="bg-slate-50/75 dark:bg-slate-800 text-[11px] uppercase font-bold text-slate-400 tracking-wider">
+                      <tr>
+                        <th class="py-3 px-3 rounded-l-xl">N° Facture</th>
+                        <th class="py-3 px-3">Client</th>
+                        <th class="py-3 px-3 hidden md:table-cell">Email</th>
+                        <th class="py-3 px-3 hidden lg:table-cell">Émission</th>
+                        <th class="py-3 px-3 hidden lg:table-cell">Échéance</th>
+                        <th class="py-3 px-3 font-semibold">Montant TTC (FCFA)</th>
+                        <th class="py-3 px-3 text-center">Statut</th>
+                        <th class="py-3 px-3 text-right rounded-r-xl">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody id="invoiceTableBody" class="divide-y divide-slate-100 dark:divide-slate-700/50 font-medium">
+                      <!-- Rows injected dynamically by JS -->
+                    </tbody>
+                  </table>
+                </div>
+
+                <!-- Table Footer Pagination -->
+                <div class="mt-4 pt-4 border-t border-slate-100 dark:border-slate-700/50 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 gap-3">
+                  <span id="paginationInfo">Affichage de 1 à 6 sur 6 factures</span>
+                  <div class="flex items-center gap-1">
+                    <button class="px-2 py-1 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700"><i data-lucide="chevron-left" class="w-3 h-3"></i></button>
+                    <button class="px-2.5 py-1 rounded-lg bg-brand-500 text-white font-bold">1</button>
+                    <button class="px-2.5 py-1 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700">2</button>
+                    <button class="px-2 py-1 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700"><i data-lucide="chevron-right" class="w-3 h-3"></i></button>
+                  </div>
+                </div>
+
+              </div>
+
+            </main>
+          </div>
+        </div>
+
+        <!-- Floating Badge Element (Sales/Growth indicator) -->
+        <div class="absolute -bottom-6 -right-4 md:-right-6 hidden sm:flex items-center gap-3 bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-xl border border-slate-100 dark:border-slate-700 animate-float">
+          <div class="w-12 h-12 rounded-xl bg-brand-50 dark:bg-brand-950 flex items-center justify-center text-brand-600 dark:text-brand-400 font-bold">
+            <i data-lucide="shield-check" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <p class="text-xs font-bold text-slate-900 dark:text-white">Conforme DGI & OHADA</p>
+            <p class="text-[11px] text-slate-500">TVA 18% & mentions obligatoires</p>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========================================== -->
+  <!-- SECTION PROBLÈMES                          -->
+  <!-- ========================================== -->
+  <section id="problemes" class="py-20 md:py-28 bg-white dark:bg-[#0F172A] border-y border-slate-200/80 dark:border-slate-800/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <!-- Section Header -->
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <span class="px-3.5 py-1 rounded-full text-xs font-bold tracking-wider uppercase bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-900/60">
+          Les douleurs du quotidien
+        </span>
+        <h2 class="mt-4 text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+          Pourquoi la facturation traditionnelle freine votre croissance ?
+        </h2>
+        <p class="mt-4 text-slate-600 dark:text-slate-300 text-base sm:text-lg">
+          Les entrepreneurs africains perdent en moyenne 14 heures par mois à gérer des factures manuelles avec des risques fiscaux élevés.
+        </p>
+      </div>
+
+      <!-- 3 Problem Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        
+        <!-- Problem 1 -->
+        <div class="rounded-3xl p-8 bg-[#F8FAFC] dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-700/60 hover:border-rose-300 dark:hover:border-rose-800 transition-all duration-300 group">
+          <div class="w-14 h-14 rounded-2xl bg-rose-100 dark:bg-rose-950/80 text-rose-600 dark:text-rose-400 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+            <i data-lucide="file-x" class="w-7 h-7"></i>
+          </div>
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">
+            1. Factures artisanales peu professionnelles
+          </h3>
+          <p class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">
+            Faire ses devis et factures sur Word ou Excel donne une image peu crédible auprès des grands comptes et complique la numérotation séquentielle légale.
+          </p>
+          <div class="mt-6 pt-4 border-t border-slate-200/60 dark:border-slate-700/60 flex items-center gap-2 text-xs font-semibold text-rose-600 dark:text-rose-400">
+            <i data-lucide="alert-circle" class="w-4 h-4"></i>
+            <span>Risque de perte de crédibilité</span>
+          </div>
+        </div>
+
+        <!-- Problem 2 -->
+        <div class="rounded-3xl p-8 bg-[#F8FAFC] dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-700/60 hover:border-rose-300 dark:hover:border-rose-800 transition-all duration-300 group">
+          <div class="w-14 h-14 rounded-2xl bg-rose-100 dark:bg-rose-950/80 text-rose-600 dark:text-rose-400 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+            <i data-lucide="calculator" class="w-7 h-7"></i>
+          </div>
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">
+            2. Calculs manuels de TVA (18%) et erreurs
+          </h3>
+          <p class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">
+            Calculer la TVA à 18%, le précompte, l'acompte BIC ou l'AIRSI à la main mène inévitablement à des erreurs de calcul et des redressements fiscaux coûteux.
+          </p>
+          <div class="mt-6 pt-4 border-t border-slate-200/60 dark:border-slate-700/60 flex items-center gap-2 text-xs font-semibold text-rose-600 dark:text-rose-400">
+            <i data-lucide="alert-circle" class="w-4 h-4"></i>
+            <span>Pénalités et stress comptable</span>
+          </div>
+        </div>
+
+        <!-- Problem 3 -->
+        <div class="rounded-3xl p-8 bg-[#F8FAFC] dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-700/60 hover:border-rose-300 dark:hover:border-rose-800 transition-all duration-300 group">
+          <div class="w-14 h-14 rounded-2xl bg-rose-100 dark:bg-rose-950/80 text-rose-600 dark:text-rose-400 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+            <i data-lucide="hourglass" class="w-7 h-7"></i>
+          </div>
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">
+            3. Suivi des paiements & relances impossibles
+          </h3>
+          <p class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">
+            Difficile de savoir qui a payé par Wave, Orange Money ou virement bancaire. Des millions de FCFA restent dehors sans relance programmée.
+          </p>
+          <div class="mt-6 pt-4 border-t border-slate-200/60 dark:border-slate-700/60 flex items-center gap-2 text-xs font-semibold text-rose-600 dark:text-rose-400">
+            <i data-lucide="alert-circle" class="w-4 h-4"></i>
+            <span>Trésorerie asphyxiée</span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========================================== -->
+  <!-- SECTION FONCTIONNALITÉS (4 CARTES)         -->
+  <!-- ========================================== -->
+  <section id="fonctionnalites" class="py-20 md:py-28 bg-[#F6F8FA] dark:bg-[#0B1120]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <!-- Section Header -->
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <span class="px-3.5 py-1 rounded-full text-xs font-bold tracking-wider uppercase bg-brand-50 dark:bg-brand-950/60 text-brand-600 dark:text-brand-300 border border-brand-200 dark:border-brand-800">
+          La solution tout-en-un
+        </span>
+        <h2 class="mt-4 text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+          Tout ce dont vous avez besoin pour facturer comme un pro
+        </h2>
+        <p class="mt-4 text-slate-600 dark:text-slate-300 text-base sm:text-lg">
+          Une interface fluide et intuitive pensée pour la réalité des affaires en Afrique.
+        </p>
+      </div>
+
+      <!-- 4 Feature Cards Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        
+        <!-- Feature 1 -->
+        <div class="bg-white dark:bg-slate-800 rounded-3xl p-8 sm:p-10 border border-slate-200/80 dark:border-slate-700/80 shadow-subtle hover:shadow-premium transition-all duration-300 flex flex-col justify-between group">
+          <div>
+            <div class="w-14 h-14 rounded-2xl bg-brand-50 dark:bg-brand-950 text-brand-600 dark:text-brand-400 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+              <i data-lucide="zap" class="w-7 h-7"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-slate-900 dark:text-white mb-3">
+              1. Factures professionnelles en 2 clics
+            </h3>
+            <p class="text-slate-600 dark:text-slate-300 leading-relaxed text-sm sm:text-base">
+              Renseignez vos articles, sélectionnez le client et téléchargez immédiatement un PDF élégant à vos couleurs avec votre logo, tampon et coordonnées bancaires (IBAN, Wave, OM).
+            </p>
+          </div>
+          <div class="mt-8 flex items-center gap-2 text-xs font-bold text-brand-600 dark:text-brand-400">
+            <span>Envoi WhatsApp & Email instantané</span>
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </div>
+        </div>
+
+        <!-- Feature 2 -->
+        <div class="bg-white dark:bg-slate-800 rounded-3xl p-8 sm:p-10 border border-slate-200/80 dark:border-slate-700/80 shadow-subtle hover:shadow-premium transition-all duration-300 flex flex-col justify-between group">
+          <div>
+            <div class="w-14 h-14 rounded-2xl bg-brand-50 dark:bg-brand-950 text-brand-600 dark:text-brand-400 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+              <i data-lucide="percent" class="w-7 h-7"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-slate-900 dark:text-white mb-3">
+              2. TVA 18% calculée automatiquement
+            </h3>
+            <p class="text-slate-600 dark:text-slate-300 leading-relaxed text-sm sm:text-base">
+              Ne perdez plus de temps avec les calculettes. Notre moteur calcule instantanément le montant Hors Taxe (HT), la TVA à 18% et le Total TTC en Francs CFA, avec gestion des exonérations.
+            </p>
+          </div>
+          <div class="mt-8 flex items-center gap-2 text-xs font-bold text-brand-600 dark:text-brand-400">
+            <span>Zéro erreur de calcul fiscal</span>
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </div>
+        </div>
+
+        <!-- Feature 3 -->
+        <div class="bg-white dark:bg-slate-800 rounded-3xl p-8 sm:p-10 border border-slate-200/80 dark:border-slate-700/80 shadow-subtle hover:shadow-premium transition-all duration-300 flex flex-col justify-between group">
+          <div>
+            <div class="w-14 h-14 rounded-2xl bg-brand-50 dark:bg-brand-950 text-brand-600 dark:text-brand-400 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+              <i data-lucide="activity" class="w-7 h-7"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-slate-900 dark:text-white mb-3">
+              3. Suivi des paiements en temps réel
+            </h3>
+            <p class="text-slate-600 dark:text-slate-300 leading-relaxed text-sm sm:text-base">
+              Identifiez d’un coup d'œil les factures <span class="text-emerald-600 font-semibold">Payées</span>, <span class="text-sky-600 font-semibold">En attente</span> ou <span class="text-rose-600 font-semibold">Impayées</span>. Déclenchez des rappels automatiques et recevez votre argent plus vite.
+            </p>
+          </div>
+          <div class="mt-8 flex items-center gap-2 text-xs font-bold text-brand-600 dark:text-brand-400">
+            <span>Tableau de bord visuel & notifications</span>
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </div>
+        </div>
+
+        <!-- Feature 4 -->
+        <div class="bg-white dark:bg-slate-800 rounded-3xl p-8 sm:p-10 border border-slate-200/80 dark:border-slate-700/80 shadow-subtle hover:shadow-premium transition-all duration-300 flex flex-col justify-between group">
+          <div>
+            <div class="w-14 h-14 rounded-2xl bg-brand-50 dark:bg-brand-950 text-brand-600 dark:text-brand-400 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+              <i data-lucide="contact" class="w-7 h-7"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-slate-900 dark:text-white mb-3">
+              4. Gestion de clients intégrée
+            </h3>
+            <p class="text-slate-600 dark:text-slate-300 leading-relaxed text-sm sm:text-base">
+              Centralisez votre carnet d'adresses clients : NINEA / RCCM, téléphones, emails, historique complet des factures et total des créances par client en un seul endroit.
+            </p>
+          </div>
+          <div class="mt-8 flex items-center gap-2 text-xs font-bold text-brand-600 dark:text-brand-400">
+            <span>Fiche client 360° et historique complet</span>
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========================================== -->
+  <!-- SECTION COMMENT ÇA MARCHE                  -->
+  <!-- ========================================== -->
+  <section id="comment-ca-marche" class="py-20 md:py-28 bg-white dark:bg-[#0F172A] border-y border-slate-200/80 dark:border-slate-800/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <!-- Header -->
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <span class="px-3.5 py-1 rounded-full text-xs font-bold tracking-wider uppercase bg-brand-50 dark:bg-brand-950/60 text-brand-600 dark:text-brand-300 border border-brand-200 dark:border-brand-800">
+          Simplicité absolue
+        </span>
+        <h2 class="mt-4 text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+          Comment ça marche ? En 3 étapes simples
+        </h2>
+        <p class="mt-4 text-slate-600 dark:text-slate-300 text-base sm:text-lg">
+          Passez de l'inscription à votre première facture encaissée en moins de 3 minutes.
+        </p>
+      </div>
+
+      <!-- 3 Steps Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+        
+        <!-- Step 1 -->
+        <div class="relative bg-[#F8FAFC] dark:bg-slate-800/60 rounded-3xl p-8 border border-slate-200/80 dark:border-slate-700/60 text-center">
+          <div class="w-16 h-16 rounded-2xl bg-brand-500 text-white font-extrabold text-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-brand-500/30">
+            1
+          </div>
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">
+            Inscris ton entreprise
+          </h3>
+          <p class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">
+            Crée ton compte gratuitement, ajoute ton logo, tes mentions légales et tes numéros de compte (Wave, Orange Money, Banque).
+          </p>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="relative bg-[#F8FAFC] dark:bg-slate-800/60 rounded-3xl p-8 border border-slate-200/80 dark:border-slate-700/60 text-center">
+          <div class="w-16 h-16 rounded-2xl bg-brand-500 text-white font-extrabold text-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-brand-500/30">
+            2
+          </div>
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">
+            Crée ta première facture
+          </h3>
+          <p class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">
+            Choisis ton client, saisis tes prestations ou produits en FCFA. La TVA 18% est calculée sans que tu n'aies à lever le petit doigt.
+          </p>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="relative bg-[#F8FAFC] dark:bg-slate-800/60 rounded-3xl p-8 border border-slate-200/80 dark:border-slate-700/60 text-center">
+          <div class="w-16 h-16 rounded-2xl bg-brand-500 text-white font-extrabold text-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-brand-500/30">
+            3
+          </div>
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">
+            Envoie et suis les paiements
+          </h3>
+          <p class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">
+            Partage le PDF par WhatsApp ou Email. Dès que le paiement arrive, marque-le en 1 clic et génère ton reçu.
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========================================== -->
+  <!-- SECTION TÉMOIGNAGES                        -->
+  <!-- ========================================== -->
+  <section id="temoignages" class="py-20 md:py-28 bg-[#F6F8FA] dark:bg-[#0B1120]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <!-- Section Header -->
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <span class="px-3.5 py-1 rounded-full text-xs font-bold tracking-wider uppercase bg-brand-50 dark:bg-brand-950/60 text-brand-600 dark:text-brand-300 border border-brand-200 dark:border-brand-800">
+          Ils nous font confiance
+        </span>
+        <h2 class="mt-4 text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+          Ce que disent les entrepreneurs africains
+        </h2>
+        <p class="mt-4 text-slate-600 dark:text-slate-300 text-base sm:text-lg">
+          Du Sénégal à la Côte d'Ivoire en passant par le Cameroun, ils ont simplifié leur gestion.
+        </p>
+      </div>
+
+      <!-- Testimonials Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        
+        <!-- Testimonial 1 (Sénégal) -->
+        <div class="bg-white dark:bg-slate-800 rounded-3xl p-8 border border-slate-200/80 dark:border-slate-700/80 shadow-subtle flex flex-col justify-between">
+          <div>
+            <!-- Stars -->
+            <div class="flex items-center gap-1 text-amber-400 mb-4">
+              <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+            </div>
+            <p class="text-slate-700 dark:text-slate-300 text-sm leading-relaxed italic">
+              "Avant Facture'Easy, je passais des soirées entières sur Excel à vérifier si ma TVA à 18% était correcte pour le fisc sénégalais. Aujourd'hui, j'envoie mes factures par WhatsApp en 30 secondes chrono !"
+            </p>
+          </div>
+          <div class="mt-6 pt-6 border-t border-slate-100 dark:border-slate-700/60 flex items-center gap-3">
+            <div class="w-11 h-11 rounded-full bg-emerald-500 text-white font-bold flex items-center justify-center text-sm">
+              MS
+            </div>
+            <div>
+              <p class="text-sm font-bold text-slate-900 dark:text-white">Mamadou Sy</p>
+              <p class="text-xs text-slate-400">Fondateur de Teranga Digital — Dakar 🇸🇳</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Testimonial 2 (Côte d'Ivoire) -->
+        <div class="bg-white dark:bg-slate-800 rounded-3xl p-8 border border-slate-200/80 dark:border-slate-700/80 shadow-subtle flex flex-col justify-between">
+          <div>
+            <!-- Stars -->
+            <div class="flex items-center gap-1 text-amber-400 mb-4">
+              <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+            </div>
+            <p class="text-slate-700 dark:text-slate-300 text-sm leading-relaxed italic">
+              "Le suivi des statuts en vert, bleu et rouge est exactement ce qu'il me fallait. Je sais directement quels clients relancer sur Abidjan et mes rentrées de fonds ont augmenté de 35% en 2 mois."
+            </p>
+          </div>
+          <div class="mt-6 pt-6 border-t border-slate-100 dark:border-slate-700/60 flex items-center gap-3">
+            <div class="w-11 h-11 rounded-full bg-sky-500 text-white font-bold flex items-center justify-center text-sm">
+              AK
+            </div>
+            <div>
+              <p class="text-sm font-bold text-slate-900 dark:text-white">Aminata Koné</p>
+              <p class="text-xs text-slate-400">Directrice d'Ivoire Agence — Abidjan 🇨🇮</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Testimonial 3 (Cameroun) -->
+        <div class="bg-white dark:bg-slate-800 rounded-3xl p-8 border border-slate-200/80 dark:border-slate-700/80 shadow-subtle flex flex-col justify-between">
+          <div>
+            <!-- Stars -->
+            <div class="flex items-center gap-1 text-amber-400 mb-4">
+              <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+            </div>
+            <p class="text-slate-700 dark:text-slate-300 text-sm leading-relaxed italic">
+              "Le plan Pro à 5 000 FCFA est un investissement dérisoire par rapport au temps gagné. Nos clients à Douala et Yaoundé apprécient la clarté et le professionnalisme de nos factures PDF."
+            </p>
+          </div>
+          <div class="mt-6 pt-6 border-t border-slate-100 dark:border-slate-700/60 flex items-center gap-3">
+            <div class="w-11 h-11 rounded-full bg-indigo-500 text-white font-bold flex items-center justify-center text-sm">
+              JM
+            </div>
+            <div>
+              <p class="text-sm font-bold text-slate-900 dark:text-white">Jean-Paul Manga</p>
+              <p class="text-xs text-slate-400">CEO Manga Logistique — Douala 🇨🇲</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========================================== -->
+  <!-- SECTION TARIFICATION                       -->
+  <!-- ========================================== -->
+  <section id="tarifs" class="py-20 md:py-28 bg-white dark:bg-[#0F172A] border-y border-slate-200/80 dark:border-slate-800/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <!-- Section Header -->
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <span class="px-3.5 py-1 rounded-full text-xs font-bold tracking-wider uppercase bg-brand-50 dark:bg-brand-950/60 text-brand-600 dark:text-brand-300 border border-brand-200 dark:border-brand-800">
+          Tarifs clairs & transparents
+        </span>
+        <h2 class="mt-4 text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+          Un prix adapté à la taille de votre business
+        </h2>
+        <p class="mt-4 text-slate-600 dark:text-slate-300 text-base sm:text-lg">
+          Sans engagement. Payez par Wave, Orange Money, MTN MoMo ou Carte Bancaire.
+        </p>
+      </div>
+
+      <!-- Pricing Cards Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
+        
+        <!-- Plan 1 : Gratuit -->
+        <div class="rounded-3xl p-8 bg-[#F8FAFC] dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-700/60 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-xl font-bold text-slate-900 dark:text-white">Plan Découverte</h3>
+              <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300">Gratuit</span>
+            </div>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mb-6">Idéal pour les freelances et auto-entrepreneurs qui débutent.</p>
+            
+            <div class="mb-8">
+              <span class="text-4xl font-extrabold text-slate-900 dark:text-white">0</span>
+              <span class="text-sm font-bold text-slate-500">FCFA / mois</span>
+            </div>
+
+            <ul class="space-y-3.5 text-xs text-slate-600 dark:text-slate-300 font-medium">
+              <li class="flex items-center gap-2.5">
+                <i data-lucide="check" class="w-4 h-4 text-brand-500"></i>
+                <span>Jusqu'à <strong>5 factures / mois</strong></span>
+              </li>
+              <li class="flex items-center gap-2.5">
+                <i data-lucide="check" class="w-4 h-4 text-brand-500"></i>
+                <span>1 utilisateur</span>
+              </li>
+              <li class="flex items-center gap-2.5">
+                <i data-lucide="check" class="w-4 h-4 text-brand-500"></i>
+                <span>Calcul automatique TVA 18%</span>
+              </li>
+              <li class="flex items-center gap-2.5">
+                <i data-lucide="check" class="w-4 h-4 text-brand-500"></i>
+                <span>Export PDF standard</span>
+              </li>
+              <li class="flex items-center gap-2.5 text-slate-400">
+                <i data-lucide="x" class="w-4 h-4 text-slate-300 dark:text-slate-600"></i>
+                <span>Relances automatiques</span>
+              </li>
+            </ul>
+          </div>
+
+          <button onclick="openModal('registerModal')" class="mt-8 w-full py-3.5 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 border border-slate-200 dark:border-slate-600 transition">
+            Commencer gratuitement
+          </button>
+        </div>
+
+        <!-- Plan 2 : PRO (Mis en Avant - Featured) -->
+        <div class="relative rounded-3xl p-8 sm:p-10 bg-white dark:bg-slate-800 border-2 border-brand-500 shadow-xl shadow-brand-500/10 flex flex-col justify-between -translate-y-2 lg:-translate-y-4">
+          <!-- Popular Pill -->
+          <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-xs font-bold bg-brand-500 text-white uppercase tracking-wider shadow-md">
+            🔥 Le plus populaire
+          </div>
+
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-2xl font-bold text-slate-900 dark:text-white">Plan Pro</h3>
+              <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-brand-100 text-brand-800 dark:bg-brand-950 dark:text-brand-300">Recommandé</span>
+            </div>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mb-6">Pour les entrepreneurs actifs qui veulent automatiser à 100%.</p>
+            
+            <div class="mb-8">
+              <span class="text-5xl font-black text-slate-900 dark:text-white">5 000</span>
+              <span class="text-sm font-bold text-brand-600 dark:text-brand-400">FCFA / mois</span>
+              <p class="text-[11px] text-slate-400 mt-1">Soit environ 7,60 € / mois</p>
+            </div>
+
+            <ul class="space-y-3.5 text-xs text-slate-700 dark:text-slate-200 font-medium">
+              <li class="flex items-center gap-2.5">
+                <div class="w-5 h-5 rounded-full bg-brand-100 dark:bg-brand-950 flex items-center justify-center text-brand-600 dark:text-brand-400">
+                  <i data-lucide="check" class="w-3.5 h-3.5"></i>
+                </div>
+                <span><strong>Factures & Devis illimités</strong></span>
+              </li>
+              <li class="flex items-center gap-2.5">
+                <div class="w-5 h-5 rounded-full bg-brand-100 dark:bg-brand-950 flex items-center justify-center text-brand-600 dark:text-brand-400">
+                  <i data-lucide="check" class="w-3.5 h-3.5"></i>
+                </div>
+                <span>Calcul TVA 18%, BIC, AIRSI</span>
+              </li>
+              <li class="flex items-center gap-2.5">
+                <div class="w-5 h-5 rounded-full bg-brand-100 dark:bg-brand-950 flex items-center justify-center text-brand-600 dark:text-brand-400">
+                  <i data-lucide="check" class="w-3.5 h-3.5"></i>
+                </div>
+                <span>Envoi WhatsApp direct & Email</span>
+              </li>
+              <li class="flex items-center gap-2.5">
+                <div class="w-5 h-5 rounded-full bg-brand-100 dark:bg-brand-950 flex items-center justify-center text-brand-600 dark:text-brand-400">
+                  <i data-lucide="check" class="w-3.5 h-3.5"></i>
+                </div>
+                <span>Relances automatiques par SMS / Email</span>
+              </li>
+              <li class="flex items-center gap-2.5">
+                <div class="w-5 h-5 rounded-full bg-brand-100 dark:bg-brand-950 flex items-center justify-center text-brand-600 dark:text-brand-400">
+                  <i data-lucide="check" class="w-3.5 h-3.5"></i>
+                </div>
+                <span>Logo personnalisé & signature</span>
+              </li>
+              <li class="flex items-center gap-2.5">
+                <div class="w-5 h-5 rounded-full bg-brand-100 dark:bg-brand-950 flex items-center justify-center text-brand-600 dark:text-brand-400">
+                  <i data-lucide="check" class="w-3.5 h-3.5"></i>
+                </div>
+                <span>Support prioritaire par WhatsApp</span>
+              </li>
+            </ul>
+          </div>
+
+          <button onclick="openModal('registerModal')" class="mt-8 w-full py-4 rounded-2xl text-sm font-bold text-white bg-brand-500 hover:bg-brand-600 shadow-xl shadow-brand-500/25 transition btn-magnetic">
+            Choisir le Plan Pro (Essai 14j gratuit)
+          </button>
+        </div>
+
+        <!-- Plan 3 : Business -->
+        <div class="rounded-3xl p-8 bg-[#F8FAFC] dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-700/60 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-xl font-bold text-slate-900 dark:text-white">Plan Business</h3>
+              <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300">PME & Équipes</span>
+            </div>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mb-6">Pour les structures établies et cabinets d'expertise.</p>
+            
+            <div class="mb-8">
+              <span class="text-4xl font-extrabold text-slate-900 dark:text-white">15 000</span>
+              <span class="text-sm font-bold text-slate-500">FCFA / mois</span>
+            </div>
+
+            <ul class="space-y-3.5 text-xs text-slate-600 dark:text-slate-300 font-medium">
+              <li class="flex items-center gap-2.5">
+                <i data-lucide="check" class="w-4 h-4 text-brand-500"></i>
+                <span><strong>Multi-utilisateurs (jusqu'à 10)</strong></span>
+              </li>
+              <li class="flex items-center gap-2.5">
+                <i data-lucide="check" class="w-4 h-4 text-brand-500"></i>
+                <span>Gestion multi-entreprises</span>
+              </li>
+              <li class="flex items-center gap-2.5">
+                <i data-lucide="check" class="w-4 h-4 text-brand-500"></i>
+                <span>Export comptable SYSCOHADA</span>
+              </li>
+              <li class="flex items-center gap-2.5">
+                <i data-lucide="check" class="w-4 h-4 text-brand-500"></i>
+                <span>Rapports avancés & Tableau de bord KPI</span>
+              </li>
+              <li class="flex items-center gap-2.5">
+                <i data-lucide="check" class="w-4 h-4 text-brand-500"></i>
+                <span>Gestionnaire de compte dédié</span>
+              </li>
+            </ul>
+          </div>
+
+          <button onclick="openModal('registerModal')" class="mt-8 w-full py-3.5 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 border border-slate-200 dark:border-slate-600 transition">
+            Choisir Business
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========================================== -->
+  <!-- SECTION CTA FINAL                          -->
+  <!-- ========================================== -->
+  <section class="py-20 md:py-28 bg-gradient-to-b from-[#F6F8FA] to-white dark:from-[#0B1120] dark:to-[#0F172A] relative overflow-hidden">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+      
+      <div class="rounded-3xl bg-slate-900 dark:bg-slate-800 text-white p-10 sm:p-16 relative overflow-hidden shadow-2xl">
+        <!-- Background decorative blur -->
+        <div class="absolute -right-20 -top-20 w-80 h-80 bg-brand-500/20 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -left-20 -bottom-20 w-80 h-80 bg-brand-500/20 rounded-full blur-3xl pointer-events-none"></div>
+
+        <span class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-bold bg-brand-500/20 text-brand-300 border border-brand-500/30 mb-6">
+          ⚡ Rejoins le mouvement
+        </span>
+
+        <h2 class="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight leading-tight max-w-2xl mx-auto">
+          Rejoins les entrepreneurs qui facturent comme des pros.
+        </h2>
+
+        <p class="mt-6 text-slate-300 text-base sm:text-lg max-w-xl mx-auto">
+          Créez votre première facture en 2 minutes. Sans carte de crédit, sans engagement.
+        </p>
+
+        <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+          <button onclick="openModal('registerModal')" class="w-full sm:w-auto px-8 py-4 rounded-2xl text-base font-extrabold text-slate-900 bg-brand-400 hover:bg-brand-300 shadow-xl shadow-brand-500/30 transition btn-magnetic">
+            Commencer gratuitement maintenant
+          </button>
+          <a href="#live-demo" class="w-full sm:w-auto px-6 py-4 rounded-2xl text-sm font-bold text-white bg-slate-800 hover:bg-slate-700 border border-slate-700 transition">
+            Tester le simulateur
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========================================== -->
+  <!-- FOOTER                                     -->
+  <!-- ========================================== -->
+  <footer class="bg-white dark:bg-slate-900 border-t border-slate-200/80 dark:border-slate-800 py-12 sm:py-16 text-xs text-slate-500 dark:text-slate-400">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+        <!-- Col 1: Brand Info -->
+        <div class="space-y-4 md:col-span-1">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-lg bg-brand-500 flex items-center justify-center text-white font-bold text-sm shadow">
+              ⚡
+            </div>
+            <span class="font-bold text-lg text-slate-900 dark:text-white tracking-tight">Facture'Easy</span>
+          </div>
+          <p class="text-slate-500 dark:text-slate-400 leading-relaxed">
+            La solution SaaS de facturation moderne pour les entrepreneurs, freelances et PME d'Afrique francophone.
+          </p>
+          <div class="flex items-center gap-3 text-slate-400">
+            <a href="#" class="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 hover:text-brand-500 transition"><i data-lucide="facebook" class="w-4 h-4"></i></a>
+            <a href="#" class="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 hover:text-brand-500 transition"><i data-lucide="twitter" class="w-4 h-4"></i></a>
+            <a href="#" class="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 hover:text-brand-500 transition"><i data-lucide="linkedin" class="w-4 h-4"></i></a>
+            <a href="#" class="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 hover:text-brand-500 transition"><i data-lucide="message-circle" class="w-4 h-4"></i></a>
+          </div>
+        </div>
+
+        <!-- Col 2: Produit -->
+        <div>
+          <h4 class="font-bold text-slate-900 dark:text-white mb-3 uppercase tracking-wider text-[11px]">Produit</h4>
+          <ul class="space-y-2.5">
+            <li><a href="#fonctionnalites" class="hover:text-brand-500 transition">Création de factures</a></li>
+            <li><a href="#fonctionnalites" class="hover:text-brand-500 transition">Calcul TVA 18%</a></li>
+            <li><a href="#fonctionnalites" class="hover:text-brand-500 transition">Suivi des paiements</a></li>
+            <li><a href="#tarifs" class="hover:text-brand-500 transition">Grille des tarifs</a></li>
+            <li><a href="#live-demo" class="hover:text-brand-500 transition">Démo interactive</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 3: Pays & Compatibilité -->
+        <div>
+          <h4 class="font-bold text-slate-900 dark:text-white mb-3 uppercase tracking-wider text-[11px]">Disponibilité</h4>
+          <ul class="space-y-2.5">
+            <li>🇸🇳 Sénégal (Dakar)</li>
+            <li>🇨🇮 Côte d'Ivoire (Abidjan)</li>
+            <li>🇨🇲 Cameroun (Douala)</li>
+            <li>🇧🇯 Bénin (Cotonou)</li>
+            <li>🇹🇬 Togo (Lomé) & zone FCFA</li>
+            <li>🇧🇫 Burkina Faso (Ouagadougou)</li>
+          </ul>
+        </div>
+
+        <!-- Col 4: Légal & Contact -->
+        <div>
+          <h4 class="font-bold text-slate-900 dark:text-white mb-3 uppercase tracking-wider text-[11px]">Support & Légal</h4>
+          <ul class="space-y-2.5">
+            <li><a href="#" class="hover:text-brand-500 transition">Centre d'aide</a></li>
+            <li><a href="#" class="hover:text-brand-500 transition">Conditions d'utilisation</a></li>
+            <li><a href="#" class="hover:text-brand-500 transition">Politique de confidentialité</a></li>
+            <li><a href="mailto:contact@factureasy.com" class="hover:text-brand-500 transition">contact@factureasy.com</a></li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="pt-8 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <p>© 2026 Facture'Easy. Tous droits réservés.</p>
+        <p class="font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+          <span>Fait avec fierté en Afrique</span>
+          <span class="text-base">🌍</span>
+        </p>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- ========================================== -->
+  <!-- MODAL: CRÉER UNE FACTURE (INTERACTIF)       -->
+  <!-- ========================================== -->
+  <div id="createInvoiceModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl border border-slate-200 dark:border-slate-700 max-h-[90vh] overflow-y-auto">
+      
+      <div class="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
+        <div>
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white">Créer une nouvelle facture</h3>
+          <p class="text-xs text-slate-500">Calcul automatique du montant HT, TVA 18% et TTC en FCFA</p>
+        </div>
+        <button onclick="closeModal('createInvoiceModal')" class="p-2 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="newInvoiceForm" onsubmit="handleCreateInvoice(event)" class="mt-6 space-y-4">
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Nom du client</label>
+            <input type="text" id="clientName" required placeholder="Ex: Senelec, Orange, Aya..." class="w-full px-3.5 py-2 rounded-xl text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:outline-none focus:border-brand-500 text-slate-800 dark:text-slate-100" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Email du client</label>
+            <input type="email" id="clientEmail" required placeholder="client@domaine.com" class="w-full px-3.5 py-2 rounded-xl text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:outline-none focus:border-brand-500 text-slate-800 dark:text-slate-100" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Description de la prestation / produit</label>
+          <input type="text" id="itemDesc" required placeholder="Ex: Développement application web, Conseil..." class="w-full px-3.5 py-2 rounded-xl text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:outline-none focus:border-brand-500 text-slate-800 dark:text-slate-100" />
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Montant Hors Taxe (HT en FCFA)</label>
+            <input type="number" id="amountHT" min="1000" step="500" required placeholder="500000" oninput="calculateVAT()" class="w-full px-3.5 py-2 rounded-xl text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:outline-none focus:border-brand-500 text-slate-800 dark:text-slate-100 font-bold" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Statut initial</label>
+            <select id="invoiceStatus" class="w-full px-3.5 py-2 rounded-xl text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:outline-none focus:border-brand-500 text-slate-800 dark:text-slate-100 font-semibold">
+              <option value="En attente">En attente (Bleu)</option>
+              <option value="Payée">Payée (Vert)</option>
+              <option value="Impayée">Impayée (Rouge)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Real-time calculation preview box -->
+        <div class="p-4 rounded-2xl bg-brand-50/50 dark:bg-slate-800/80 border border-brand-200/60 dark:border-slate-700 space-y-2 text-xs">
+          <div class="flex justify-between text-slate-600 dark:text-slate-300">
+            <span>Sous-total HT :</span>
+            <span id="previewHT" class="font-bold font-mono">0 FCFA</span>
+          </div>
+          <div class="flex justify-between text-slate-600 dark:text-slate-300">
+            <span>TVA (18% automatique) :</span>
+            <span id="previewTVA" class="font-bold font-mono text-brand-600 dark:text-brand-400">0 FCFA</span>
+          </div>
+          <div class="pt-2 border-t border-brand-200/50 dark:border-slate-700 flex justify-between text-slate-900 dark:text-white font-extrabold text-sm">
+            <span>Total TTC à payer :</span>
+            <span id="previewTTC" class="text-brand-600 dark:text-brand-400 font-mono">0 FCFA</span>
+          </div>
+        </div>
+
+        <div class="pt-3 flex items-center justify-end gap-3">
+          <button type="button" onclick="closeModal('createInvoiceModal')" class="px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">
+            Annuler
+          </button>
+          <button type="submit" class="px-5 py-2.5 rounded-xl text-xs font-bold text-white bg-brand-500 hover:bg-brand-600 shadow-md shadow-brand-500/25 transition">
+            Générer la facture
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: INSCRIPTION RAPIDE (DEMO CTA)       -->
+  <!-- ========================================== -->
+  <div id="registerModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full p-8 shadow-2xl border border-slate-200 dark:border-slate-700 text-center">
+      <div class="w-12 h-12 rounded-2xl bg-brand-100 dark:bg-brand-950 text-brand-600 dark:text-brand-400 flex items-center justify-center mx-auto mb-4">
+        <i data-lucide="sparkles" class="w-6 h-6"></i>
+      </div>
+      <h3 class="text-2xl font-bold text-slate-900 dark:text-white">Créer votre compte Facture'Easy</h3>
+      <p class="text-xs text-slate-500 mt-1 mb-6">Commencez dès aujourd'hui à facturer en FCFA en toute simplicité.</p>
+
+      <form onsubmit="handleRegister(event)" class="space-y-4 text-left">
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Nom de l'entreprise</label>
+          <input type="text" required placeholder="Ex: Teranga Services SARL" class="w-full px-3.5 py-2 rounded-xl text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:outline-none focus:border-brand-500 text-slate-800 dark:text-slate-100" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Email professionnel</label>
+          <input type="email" required placeholder="vous@entreprise.com" class="w-full px-3.5 py-2 rounded-xl text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:outline-none focus:border-brand-500 text-slate-800 dark:text-slate-100" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Pays</label>
+          <select class="w-full px-3.5 py-2 rounded-xl text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:outline-none focus:border-brand-500 text-slate-800 dark:text-slate-100 font-medium">
+            <option>🇸🇳 Sénégal (XOF)</option>
+            <option>🇨🇮 Côte d'Ivoire (XOF)</option>
+            <option>🇨🇲 Cameroun (XAF)</option>
+            <option>🇧🇯 Bénin (XOF)</option>
+            <option>🇹🇬 Togo (XOF)</option>
+            <option>🇧🇫 Burkina Faso (XOF)</option>
+          </select>
+        </div>
+        <button type="submit" class="w-full py-3.5 rounded-xl text-xs font-bold text-white bg-brand-500 hover:bg-brand-600 shadow-lg shadow-brand-500/25 transition mt-2">
+          Créer mon compte gratuit
+        </button>
+      </form>
+
+      <p class="text-[11px] text-slate-400 mt-4">
+        En vous inscrivant, vous acceptez nos CGU. 14 jours d'essai Pro offerts.
+      </p>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- JAVASCRIPT LOGIC & DYNAMIC DATA            -->
+  <!-- ========================================== -->
+  <script>
+    // Initial Invoice Mock Data (Conforming exactly to SalesSync aesthetic with African context)
+    let invoices = [
+      {
+        id: "INV-2026-001",
+        client: "Kamisato Ayaka",
+        email: "ayaka.k@dakar-digital.sn",
+        date: "04 Fév 2026",
+        dueDate: "11 Fév 2026",
+        amountHT: 650000,
+        vat: 117000,
+        amountTTC: 767000,
+        status: "Payée"
+      },
+      {
+        id: "INV-2026-002",
+        client: "Kamisato Ayato",
+        email: "ayato@abidjan-tech.ci",
+        date: "02 Fév 2026",
+        dueDate: "09 Fév 2026",
+        amountHT: 320000,
+        vat: 57600,
+        amountTTC: 377600,
+        status: "En attente"
+      },
+      {
+        id: "INV-2026-003",
+        client: "Raiden Shogun",
+        email: "raiden@inazuma-consulting.com",
+        date: "28 Jan 2026",
+        dueDate: "04 Fév 2026",
+        amountHT: 1250000,
+        vat: 225000,
+        amountTTC: 1475000,
+        status: "Payée"
+      },
+      {
+        id: "INV-2026-004",
+        client: "El Moulina SARL",
+        email: "contact@elmoulina.cm",
+        date: "25 Jan 2026",
+        dueDate: "01 Fév 2026",
+        amountHT: 450000,
+        vat: 81000,
+        amountTTC: 531000,
+        status: "Impayée"
+      },
+      {
+        id: "INV-2026-005",
+        client: "Falah Maulana",
+        email: "falah@sen-logistics.sn",
+        date: "20 Jan 2026",
+        dueDate: "27 Jan 2026",
+        amountHT: 890000,
+        vat: 160200,
+        amountTTC: 1050200,
+        status: "Payée"
+      },
+      {
+        id: "INV-2026-006",
+        client: "Achmad Van",
+        email: "achmad@ivoire-build.ci",
+        date: "18 Jan 2026",
+        dueDate: "25 Jan 2026",
+        amountHT: 1472000,
+        vat: 264960,
+        amountTTC: 1736960,
+        status: "En attente"
+      }
+    ];
+
+    let currentFilter = 'all';
+
+    // Format number to FCFA standard (e.g. 767 000)
+    function formatFCFA(num) {
+      return new Intl.NumberFormat('fr-FR').format(num) + " FCFA";
+    }
+
+    // Render Invoices in Table
+    function renderInvoiceTable(dataToRender = invoices) {
+      const tbody = document.getElementById('invoiceTableBody');
+      tbody.innerHTML = '';
+
+      if (dataToRender.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="8" class="text-center py-8 text-slate-400">
+              <i data-lucide="inbox" class="w-8 h-8 mx-auto mb-2 opacity-50"></i>
+              Aucune facture trouvée pour ce filtre.
+            </td>
+          </tr>
+        `;
+        lucide.createIcons();
+        return;
+      }
+
+      dataToRender.forEach((inv, index) => {
+        let badgeClass = '';
+        if (inv.status === 'Payée') badgeClass = 'badge-paid';
+        else if (inv.status === 'En attente') badgeClass = 'badge-pending';
+        else badgeClass = 'badge-unpaid';
+
+        const row = document.createElement('tr');
+        row.className = "hover:bg-slate-50/80 dark:hover:bg-slate-700/30 transition duration-150";
+        row.innerHTML = `
+          <td class="py-3.5 px-3 font-mono font-bold text-slate-900 dark:text-white">${inv.id}</td>
+          <td class="py-3.5 px-3 font-semibold text-slate-800 dark:text-slate-200">${inv.client}</td>
+          <td class="py-3.5 px-3 text-slate-500 dark:text-slate-400 hidden md:table-cell">${inv.email}</td>
+          <td class="py-3.5 px-3 text-slate-500 dark:text-slate-400 hidden lg:table-cell">${inv.date}</td>
+          <td class="py-3.5 px-3 text-slate-500 dark:text-slate-400 hidden lg:table-cell">${inv.dueDate}</td>
+          <td class="py-3.5 px-3 font-bold text-slate-900 dark:text-white">${formatFCFA(inv.amountTTC)}</td>
+          <td class="py-3.5 px-3 text-center">
+            <span class="inline-block px-3 py-1 rounded-full text-[11px] font-bold ${badgeClass}">
+              ${inv.status}
+            </span>
+          </td>
+          <td class="py-3.5 px-3 text-right">
+            <div class="flex items-center justify-end gap-1 text-slate-400">
+              <button title="Voir la facture" onclick="alert('Visualisation de la facture ' + '${inv.id}')" class="p-1 rounded hover:text-brand-500 hover:bg-brand-50 dark:hover:bg-slate-700"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
+              <button title="Plus d'options" class="p-1 rounded hover:text-slate-600 dark:hover:text-slate-200"><i data-lucide="more-horizontal" class="w-4 h-4"></i></button>
+              <button title="Supprimer" onclick="deleteInvoice('${inv.id}')" class="p-1 rounded hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-slate-700"><i data-lucide="trash-2" class="w-4 h-4 text-rose-400"></i></button>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+
+      updateBadgeCounts();
+      lucide.createIcons();
+    }
+
+    // Update Counts
+    function updateBadgeCounts() {
+      const allCount = invoices.length;
+      const paidCount = invoices.filter(i => i.status === 'Payée').length;
+      const pendingCount = invoices.filter(i => i.status === 'En attente').length;
+      const unpaidCount = invoices.filter(i => i.status === 'Impayée').length;
+
+      document.getElementById('count-all').innerText = allCount;
+      document.getElementById('count-paid').innerText = paidCount;
+      document.getElementById('count-pending').innerText = pendingCount;
+      document.getElementById('count-unpaid').innerText = unpaidCount;
+      document.getElementById('totalBadgeCount').innerText = `${allCount} factures`;
+      document.getElementById('paginationInfo').innerText = `Affichage de 1 à ${allCount} sur ${allCount} factures`;
+    }
+
+    // Filter by Status Pill
+    function filterStatus(status) {
+      currentFilter = status;
+      const buttons = ['all', 'paid', 'pending', 'unpaid'];
+      buttons.forEach(b => {
+        const el = document.getElementById('btn-' + b);
+        if (el) {
+          el.classList.remove('bg-slate-900', 'text-white', 'bg-slate-100', 'dark:bg-slate-700');
+          el.classList.add('bg-slate-50', 'dark:bg-slate-800', 'text-slate-600', 'dark:text-slate-400');
+        }
+      });
+
+      const activeBtn = document.getElementById(status === 'all' ? 'btn-all' : status === 'Payée' ? 'btn-paid' : status === 'En attente' ? 'btn-pending' : 'btn-unpaid');
+      if (activeBtn) {
+        activeBtn.classList.remove('bg-slate-50', 'dark:bg-slate-800', 'text-slate-600', 'dark:text-slate-400');
+        activeBtn.classList.add('bg-slate-900', 'text-white', 'dark:bg-slate-700');
+      }
+
+      if (status === 'all') {
+        renderInvoiceTable(invoices);
+      } else {
+        const filtered = invoices.filter(i => i.status === status);
+        renderInvoiceTable(filtered);
+      }
+    }
+
+    // Search Invoices
+    function filterInvoiceTable() {
+      const q = document.getElementById('invoiceSearchInput').value.toLowerCase();
+      const filtered = invoices.filter(i => 
+        i.client.toLowerCase().includes(q) || 
+        i.id.toLowerCase().includes(q) || 
+        i.email.toLowerCase().includes(q)
+      );
+      renderInvoiceTable(filtered);
+    }
+
+    // Delete Invoice
+    function deleteInvoice(id) {
+      if (confirm(`Voulez-vous supprimer la facture ${id} ?`)) {
+        invoices = invoices.filter(i => i.id !== id);
+        renderInvoiceTable(invoices);
+      }
+    }
+
+    // VAT 18% Calculation
+    function calculateVAT() {
+      const ht = parseFloat(document.getElementById('amountHT').value) || 0;
+      const tva = ht * 0.18;
+      const ttc = ht + tva;
+
+      document.getElementById('previewHT').innerText = formatFCFA(ht);
+      document.getElementById('previewTVA').innerText = formatFCFA(tva);
+      document.getElementById('previewTTC').innerText = formatFCFA(ttc);
+    }
+
+    // Handle Create Invoice Form
+    function handleCreateInvoice(e) {
+      e.preventDefault();
+      const client = document.getElementById('clientName').value;
+      const email = document.getElementById('clientEmail').value;
+      const ht = parseFloat(document.getElementById('amountHT').value);
+      const status = document.getElementById('invoiceStatus').value;
+      const tva = ht * 0.18;
+      const ttc = ht + tva;
+
+      const newId = `INV-2026-00${invoices.length + 1}`;
+      
+      const newInvoice = {
+        id: newId,
+        client: client,
+        email: email,
+        date: "04 Fév 2026",
+        dueDate: "18 Fév 2026",
+        amountHT: ht,
+        vat: tva,
+        amountTTC: ttc,
+        status: status
+      };
+
+      invoices.unshift(newInvoice);
+      renderInvoiceTable(invoices);
+      closeModal('createInvoiceModal');
+      document.getElementById('newInvoiceForm').reset();
+      calculateVAT();
+      
+      // Feedback
+      alert(`🎉 Facture ${newId} créée avec succès avec ${formatFCFA(ttc)} TTC (TVA 18% incluse) !`);
+    }
+
+    // Handle Register Demo
+    function handleRegister(e) {
+      e.preventDefault();
+      closeModal('registerModal');
+      alert("🚀 Bienvenue sur Facture'Easy ! Votre espace entreprise est prêt.");
+    }
+
+    // Modal helpers
+    function openModal(id) {
+      document.getElementById(id).classList.remove('hidden');
+    }
+    function closeModal(id) {
+      document.getElementById(id).classList.add('hidden');
+    }
+
+    // Theme toggle
+    const themeToggleBtn = document.getElementById('themeToggle');
+    themeToggleBtn.addEventListener('click', () => {
+      document.documentElement.classList.toggle('dark');
+    });
+
+    // Initialize on load
+    document.addEventListener('DOMContentLoaded', () => {
+      renderInvoiceTable();
+      lucide.createIcons();
+    });
+  </script>
+
+</body>
+</html>
