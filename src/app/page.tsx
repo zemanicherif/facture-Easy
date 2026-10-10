@@ -49,6 +49,7 @@ import { Modal } from "@/components/ui/Modal";
 import { formatFCFA } from "@/lib/utils";
 import { initialInvoices } from "@/lib/mockData";
 import { Invoice, InvoiceStatus } from "@/lib/types";
+import { getPreferredPaymentMethods, paymentMethodLabels, type PaymentMethod, type SubscriptionPlan } from "@/lib/stripe";
 
 const getDefaultCountry = () => {
   const locale =
@@ -79,7 +80,10 @@ export default function HomePage() {
   const [activeFilter, setActiveFilter] = useState<"all" | InvoiceStatus>("all");
   const [isDark, setIsDark] = useState(false);
   const [registerModalOpen, setRegisterModalOpen] = useState(false);
+  const [paymentModalOpen, setPaymentModalOpen] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState<SubscriptionPlan | null>(null);
   const [selectedCountry, setSelectedCountry] = useState(getDefaultCountry);
+  const paymentOptions = getPreferredPaymentMethods(selectedCountry);
 
   useEffect(() => {
     const revealItems = document.querySelectorAll("[data-reveal]") as NodeListOf<HTMLElement>;
@@ -130,7 +134,7 @@ export default function HomePage() {
   const countPending = invoices.filter((i) => i.status === "En attente").length;
   const countUnpaid = invoices.filter((i) => i.status === "Impayée").length;
 
-  const handlePlanCheckout = async (plan: "starter" | "pro" | "business") => {
+  const handlePlanCheckout = async (plan: SubscriptionPlan, paymentMethod?: PaymentMethod) => {
     if (plan === "starter") {
       window.location.href = "/login?mode=signup&plan=starter";
       return;
@@ -142,7 +146,7 @@ export default function HomePage() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ plan }),
+        body: JSON.stringify({ plan, paymentMethod: paymentMethod ?? "stripe" }),
       });
 
       const data = await response.json();
@@ -157,6 +161,11 @@ export default function HomePage() {
       console.error("Checkout error:", error);
       window.location.href = `/login?mode=signup&plan=${plan}`;
     }
+  };
+
+  const openPaymentModal = (plan: SubscriptionPlan) => {
+    setSelectedPlan(plan);
+    setPaymentModalOpen(true);
   };
 
   return (
@@ -573,7 +582,7 @@ export default function HomePage() {
                 </ul>
               </div>
               <div className="mt-8">
-                <Button className="w-full" onClick={() => handlePlanCheckout("pro")}>Choisir le Plan Pro</Button>
+                <Button className="w-full" onClick={() => openPaymentModal("pro")}>Choisir le Plan Pro</Button>
               </div>
             </div>
 
@@ -591,7 +600,7 @@ export default function HomePage() {
                 </ul>
               </div>
               <div className="mt-8">
-                <Button variant="outline" className="w-full" onClick={() => handlePlanCheckout("business")}>Choisir Business</Button>
+                <Button variant="outline" className="w-full" onClick={() => openPaymentModal("business")}>Choisir Business</Button>
               </div>
             </div>
           </div>
@@ -607,6 +616,43 @@ export default function HomePage() {
           </div>
         </div>
       </footer>
+
+      <Modal
+        open={paymentModalOpen}
+        onClose={() => setPaymentModalOpen(false)}
+        title="Choisissez votre mode de paiement"
+        description="Les méthodes locales sont priorisées pour l’Afrique. Les cartes et crypto sont proposées hors Afrique."
+        size="md"
+      >
+        <div className="space-y-4">
+          <div className="rounded-2xl border border-brand-100 bg-brand-50/60 p-3 text-sm text-slate-700 dark:border-brand-900/50 dark:bg-brand-950/20 dark:text-slate-200">
+            <span className="font-bold text-brand-700 dark:text-brand-300">Plan sélectionné :</span> {selectedPlan === "pro" ? "Plan Pro" : selectedPlan === "business" ? "Plan Business" : "Plan"}
+          </div>
+
+          <div className="grid gap-3">
+            {paymentOptions.map((method) => (
+              <button
+                key={method}
+                type="button"
+                onClick={() => {
+                  setPaymentModalOpen(false);
+                  if (selectedPlan) {
+                    handlePlanCheckout(selectedPlan, method);
+                  }
+                }}
+                className="flex w-full items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 py-3 text-left text-sm font-semibold text-slate-700 transition hover:border-brand-300 hover:bg-brand-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:border-brand-700 dark:hover:bg-slate-700"
+              >
+                <span>{paymentMethodLabels[method]}</span>
+                <span className="text-xs uppercase tracking-[0.14em] text-brand-600">Choisir</span>
+              </button>
+            ))}
+          </div>
+
+          <Button variant="ghost" className="w-full" onClick={() => setPaymentModalOpen(false)}>
+            Annuler
+          </Button>
+        </div>
+      </Modal>
 
       <Modal
         open={registerModalOpen}

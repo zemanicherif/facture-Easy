@@ -10,14 +10,26 @@ const planLabel: Record<string, string> = {
   business: 'Plan Business',
 };
 
+const paymentMethodLabel: Record<string, string> = {
+  stripe: 'Stripe',
+  wave: 'Wave',
+  'orange-money': 'Orange Money',
+  momo: 'MoMo',
+  'bank-transfer': 'Virement local',
+  card: 'Carte bancaire',
+  crypto: 'Crypto',
+};
+
 function CheckoutSuccessContent() {
   const searchParams = useSearchParams();
   const plan = searchParams.get('plan') || 'pro';
+  const method = searchParams.get('method') || 'stripe';
   const demo = searchParams.get('demo') === '1';
 
   useEffect(() => {
     const payload = {
       plan,
+      method,
       activatedAt: new Date().toISOString(),
       demo,
     };
@@ -47,8 +59,8 @@ function CheckoutSuccessContent() {
         </h1>
         <p className="mt-4 text-sm text-slate-300">
           {demo
-            ? 'Le mode démo est activé. Votre accès est préparé et l’ouverture du compte se lance automatiquement.'
-            : 'Le paiement a bien été reçu. Nous ouvrons votre espace et vous redirigeons vers la création de compte.'}
+            ? `Paiement via ${paymentMethodLabel[method] || 'méthode locale'} activé. Votre accès est préparé et l’ouverture du compte se lance automatiquement.`
+            : `Paiement via ${paymentMethodLabel[method] || 'Stripe'} validé. Nous ouvrons votre espace et vous redirigeons vers la création de compte.`}
         </p>
 
         <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
