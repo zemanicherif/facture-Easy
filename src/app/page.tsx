@@ -118,10 +118,10 @@ export default function HomePage() {
               {isDark ? <Sun className="w-4 h-4 text-amber-500" /> : <Moon className="w-4 h-4" />}
             </button>
 
-            <Link href="/dashboard" className="hidden sm:inline-flex">
+            <Link href="/login" className="hidden sm:inline-flex">
               <Button variant="outline" size="sm">
                 <Play className="w-3.5 h-3.5 text-brand-500 fill-brand-500" />
-                <span>Ouvrir l&apos;Application</span>
+                <span>Créer mon compte</span>
               </Button>
             </Link>
 
@@ -155,10 +155,10 @@ export default function HomePage() {
           </p>
 
           <div className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link href="/dashboard">
+            <Link href="/login">
               <Button size="lg" className="w-full sm:w-auto shadow-xl shadow-brand-500/30">
                 <Sparkles className="w-5 h-5" />
-                <span>Accéder au Dashboard Live</span>
+                <span>Créer mon compte</span>
               </Button>
             </Link>
 
@@ -173,10 +173,10 @@ export default function HomePage() {
               />
             </div>
 
-            <Link href="/invoices/new">
+            <Link href="/login">
               <Button variant="outline" size="lg" className="w-full sm:w-auto">
                 <PlusCircle className="w-4 h-4 text-brand-500" />
-                <span>Créer une facture test</span>
+                <span>Créer mon compte</span>
               </Button>
             </Link>
           </div>
@@ -456,7 +456,7 @@ export default function HomePage() {
                   <li>✔ Export PDF</li>
                 </ul>
               </div>
-              <Link href="/dashboard" className="mt-8">
+              <Link href="/login" className="mt-8">
                 <Button variant="outline" className="w-full">Commencer Gratuitement</Button>
               </Link>
             </div>
@@ -478,7 +478,7 @@ export default function HomePage() {
                   <li>✔ Support prioritaire</li>
                 </ul>
               </div>
-              <Link href="/dashboard" className="mt-8">
+              <Link href="/login" className="mt-8">
                 <Button className="w-full">Choisir le Plan Pro</Button>
               </Link>
             </div>
@@ -496,7 +496,7 @@ export default function HomePage() {
                   <li>✔ Tableau de bord KPI complet</li>
                 </ul>
               </div>
-              <Link href="/dashboard" className="mt-8">
+              <Link href="/login" className="mt-8">
                 <Button variant="outline" className="w-full">Choisir Business</Button>
               </Link>
             </div>
@@ -525,15 +525,19 @@ export default function HomePage() {
         <div className="space-y-3">
           <div className="rounded-2xl border border-brand-100 bg-gradient-to-br from-brand-50 to-emerald-50 p-4 text-left dark:border-brand-900/60 dark:from-brand-950/40 dark:to-emerald-900/20">
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-brand-600 dark:text-brand-300">
-              Accès rapide
+              Inscription
             </p>
             <p className="mt-2 text-sm text-slate-700 dark:text-slate-200">
-              Ouvrez immédiatement le dashboard, créez vos factures et suivez votre trésorerie.
+              Créez votre compte pour démarrer votre facturation, gérer vos paiements et suivre votre trésorerie en temps réel.
             </p>
           </div>
 
-          <Link href="/dashboard" onClick={() => setRegisterModalOpen(false)}>
-            <Button className="w-full">Accéder directement à l&apos;application</Button>
+          <Link href="/login" onClick={() => setRegisterModalOpen(false)}>
+            <Button className="w-full">Créer mon compte</Button>
+          </Link>
+
+          <Link href="/login" onClick={() => setRegisterModalOpen(false)}>
+            <Button variant="ghost" className="w-full">Je me connecte</Button>
           </Link>
 
           <Button variant="ghost" className="w-full" onClick={() => setRegisterModalOpen(false)}>
