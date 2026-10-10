@@ -1,7 +1,15 @@
 import { login, signup } from './actions'
 
-export default async function LoginPage({ searchParams }: { searchParams: Promise<{ error?: string; success?: string }> }) {
+export const dynamic = 'force-dynamic';
+
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string; success?: string; mode?: string }>;
+}) {
   const params = await searchParams;
+  const isSignupMode = params?.mode === 'signup';
+  const isLoginMode = params?.mode === 'login';
   const isSuccessMessage = params?.error?.startsWith('Compte créé');
 
   return (
@@ -26,8 +34,16 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
 
         {/* Card */}
         <div className="bg-slate-800/60 backdrop-blur-xl border border-slate-700/50 rounded-3xl p-8 shadow-2xl">
-          <h1 className="text-xl font-bold text-white mb-1">Bienvenue 👋</h1>
-          <p className="text-slate-400 text-sm mb-6">Connectez-vous ou créez votre compte gratuit</p>
+          <h1 className="text-xl font-bold text-white mb-1">
+            {isSignupMode ? 'Créez votre compte' : isLoginMode ? 'Bon retour 👋' : 'Bienvenue 👋'}
+          </h1>
+          <p className="text-slate-400 text-sm mb-6">
+            {isSignupMode
+              ? 'Démarrez gratuitement et créez votre compte.'
+              : isLoginMode
+                ? 'Connectez-vous pour accéder à votre espace.'
+                : 'Connectez-vous ou créez votre compte gratuit'}
+          </p>
 
           {/* Message d'erreur / succès */}
           {params?.error && (
@@ -76,9 +92,13 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
             <div className="pt-2 space-y-3">
               <button
                 formAction={login}
-                className="w-full py-3 px-6 rounded-xl text-sm font-bold text-white bg-emerald-500 hover:bg-emerald-400 shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/30 transition-all duration-200 hover:-translate-y-0.5"
+                className={`w-full py-3 px-6 rounded-xl text-sm font-bold transition-all duration-200 hover:-translate-y-0.5 ${
+                  isSignupMode
+                    ? 'text-emerald-300 bg-emerald-500/10 border border-emerald-500/30 hover:bg-emerald-500/20'
+                    : 'text-white bg-emerald-500 hover:bg-emerald-400 shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/30'
+                }`}
               >
-                Se connecter
+                {isSignupMode ? 'Déjà inscrit ? Se connecter' : 'Se connecter'}
               </button>
 
               <div className="relative">
@@ -92,9 +112,13 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
 
               <button
                 formAction={signup}
-                className="w-full py-3 px-6 rounded-xl text-sm font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 hover:bg-emerald-500/20 transition-all duration-200 hover:-translate-y-0.5"
+                className={`w-full py-3 px-6 rounded-xl text-sm font-bold transition-all duration-200 hover:-translate-y-0.5 ${
+                  isSignupMode
+                    ? 'text-white bg-emerald-500 hover:bg-emerald-400 shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/30'
+                    : 'text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 hover:bg-emerald-500/20'
+                }`}
               >
-                Créer un compte gratuit
+                {isSignupMode ? 'Créer mon compte gratuit' : 'Créer un compte gratuit'}
               </button>
             </div>
           </form>

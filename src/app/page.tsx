@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   Sparkles,
@@ -50,19 +50,68 @@ import { formatFCFA } from "@/lib/utils";
 import { initialInvoices } from "@/lib/mockData";
 import { Invoice, InvoiceStatus } from "@/lib/types";
 
+const getDefaultCountry = () => {
+  const locale =
+    typeof navigator !== "undefined"
+      ? (navigator.languages?.[0] ?? navigator.language ?? "")
+      : "";
+
+  const normalized = locale.toLowerCase();
+  const countryMap: Record<string, string[]> = {
+    bf: ["bf", "burkina", "burkina faso", "fr-bf"],
+    ci: ["ci", "cote d'ivoire", "ivory coast", "fr-ci"],
+    cm: ["cm", "cameroon", "fr-cm"],
+    ml: ["ml", "mali", "fr-ml"],
+    sn: ["sn", "senegal", "fr-sn"],
+    ga: ["ga", "gabon", "fr-ga"],
+  };
+
+  const detectedRegion = normalized.split("-")[1]?.split("_")[0] ?? "";
+  const matchesCountry = Object.entries(countryMap).find(([, aliases]) =>
+    aliases.some((alias) => normalized.includes(alias) || detectedRegion === alias)
+  );
+
+  return matchesCountry?.[0] ?? "bf";
+};
+
 export default function HomePage() {
   const [invoices, setInvoices] = useState<Invoice[]>(initialInvoices);
   const [activeFilter, setActiveFilter] = useState<"all" | InvoiceStatus>("all");
   const [isDark, setIsDark] = useState(false);
   const [registerModalOpen, setRegisterModalOpen] = useState(false);
-  const [selectedCountry, setSelectedCountry] = useState("sn");
+  const [selectedCountry, setSelectedCountry] = useState(getDefaultCountry);
+
+  useEffect(() => {
+    const revealItems = document.querySelectorAll("[data-reveal]") as NodeListOf<HTMLElement>;
+
+    if (!revealItems.length) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      {
+        threshold: 0.18,
+        rootMargin: "0px 0px -40px 0px",
+      }
+    );
+
+    revealItems.forEach((item) => observer.observe(item));
+
+    return () => observer.disconnect();
+  }, []);
 
   const countries = [
+    { label: "Burkina Faso", value: "bf", flag: "https://flagcdn.com/w40/bf.png" },
     { label: "Sénégal", value: "sn", flag: "https://flagcdn.com/w40/sn.png" },
     { label: "Côte d'Ivoire", value: "ci", flag: "https://flagcdn.com/w40/ci.png" },
     { label: "Cameroun", value: "cm", flag: "https://flagcdn.com/w40/cm.png" },
     { label: "Mali", value: "ml", flag: "https://flagcdn.com/w40/ml.png" },
-    { label: "Burkina Faso", value: "bf", flag: "https://flagcdn.com/w40/bf.png" },
     { label: "Gabon", value: "ga", flag: "https://flagcdn.com/w40/ga.png" },
   ];
 
@@ -85,7 +134,7 @@ export default function HomePage() {
     <div className="min-h-screen bg-[#F6F8FA] dark:bg-[#0B1120] text-slate-800 dark:text-slate-100 transition-colors duration-200">
       
       {/* NAVBAR */}
-      <header className="sticky top-0 z-50 backdrop-blur-md bg-white/80 dark:bg-[#0F172A]/80 border-b border-slate-200/80 dark:border-slate-800/80">
+      <header data-reveal className="reveal-item sticky top-0 z-50 backdrop-blur-md bg-white/80 dark:bg-[#0F172A]/80 border-b border-slate-200/80 dark:border-slate-800/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3 group">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-brand-400 flex items-center justify-center text-white font-black text-xl shadow-lg shadow-brand-500/30 group-hover:scale-105 transition-transform">
@@ -109,7 +158,7 @@ export default function HomePage() {
             <a href="#temoignages" className="hover:text-brand-600 transition-colors">Témoignages</a>
           </nav>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             <button
               onClick={toggleTheme}
               className="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 transition"
@@ -118,14 +167,18 @@ export default function HomePage() {
               {isDark ? <Sun className="w-4 h-4 text-amber-500" /> : <Moon className="w-4 h-4" />}
             </button>
 
-            <Link href="/login" className="hidden sm:inline-flex">
+            <Link href="/login?mode=signup" className="hidden sm:inline-flex">
               <Button variant="outline" size="sm">
                 <Play className="w-3.5 h-3.5 text-brand-500 fill-brand-500" />
                 <span>Créer mon compte</span>
               </Button>
             </Link>
 
-            <Button size="sm" onClick={() => setRegisterModalOpen(true)}>
+            <Button
+              size="sm"
+              onClick={() => setRegisterModalOpen(true)}
+              className="px-3.5 py-2 sm:px-4"
+            >
               <span>Commencer</span>
               <ArrowRight className="w-4 h-4" />
             </Button>
@@ -134,7 +187,7 @@ export default function HomePage() {
       </header>
 
       {/* HERO SECTION */}
-      <section className="relative pt-12 pb-20 md:pt-20 md:pb-32 overflow-hidden">
+      <section data-reveal className="reveal-item relative pt-12 pb-20 md:pt-20 md:pb-32 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
           
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-50 dark:bg-brand-950/60 border border-brand-200 dark:border-brand-800 text-brand-700 dark:text-brand-300 text-xs sm:text-sm font-semibold mb-8 shadow-sm">
@@ -150,17 +203,26 @@ export default function HomePage() {
             <span className="line-through text-slate-400 dark:text-slate-500 decoration-rose-500/60 decoration-4">Excel</span>.
           </h1>
 
+          <div className="mt-5 flex justify-center">
+            <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-semibold tracking-[0.12em] text-emerald-700 uppercase shadow-sm dark:border-emerald-900/70 dark:bg-emerald-950/40 dark:text-emerald-300">
+              <span className="h-2 w-2 rounded-full bg-emerald-500" />
+              Faites vous payer immédiatement
+            </div>
+          </div>
+
           <p className="mt-6 text-lg sm:text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto font-normal leading-relaxed">
             <strong className="font-semibold text-slate-900 dark:text-white">Facture&apos;Easy</strong> génère des factures professionnelles en FCFA en 2 clics, calcule la TVA à 18% automatiquement et suit vos paiements en direct.
           </p>
 
-          <div className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link href="/login">
-              <Button size="lg" className="w-full sm:w-auto shadow-xl shadow-brand-500/30">
-                <Sparkles className="w-5 h-5" />
-                <span>Créer mon compte</span>
-              </Button>
-            </Link>
+          <div data-reveal className="reveal-item mt-9 flex w-full max-w-3xl flex-col items-stretch justify-center gap-4 mx-auto sm:flex-row sm:items-center">
+            <Button
+              size="lg"
+              className="w-full shadow-xl shadow-brand-500/30 sm:w-auto"
+              onClick={() => setRegisterModalOpen(true)}
+            >
+              <Sparkles className="w-5 h-5" />
+              <span>Créer mon compte</span>
+            </Button>
 
             <div className="w-full sm:w-auto">
               <Dropdown
@@ -173,12 +235,15 @@ export default function HomePage() {
               />
             </div>
 
-            <Link href="/login">
-              <Button variant="outline" size="lg" className="w-full sm:w-auto">
-                <PlusCircle className="w-4 h-4 text-brand-500" />
-                <span>Créer mon compte</span>
-              </Button>
-            </Link>
+            <Button
+              variant="outline"
+              size="lg"
+              className="w-full sm:w-auto"
+              onClick={() => setRegisterModalOpen(true)}
+            >
+              <PlusCircle className="w-4 h-4 text-brand-500" />
+              <span>Commencer gratuitement</span>
+            </Button>
           </div>
 
           <div className="mt-8 flex flex-wrap items-center justify-center gap-6 text-xs text-slate-500">
@@ -198,7 +263,7 @@ export default function HomePage() {
 
           {/* DASHBOARD PREVIEW WRAPPER */}
           <div className="mt-16 sm:mt-20 relative max-w-6xl mx-auto text-left">
-            <div className="rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-dashboard overflow-hidden">
+<div data-reveal className="reveal-item rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-dashboard overflow-hidden">
               
               {/* Fake Browser header */}
               <div className="px-6 py-3.5 bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs text-slate-500">
@@ -342,7 +407,7 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="rounded-3xl p-8 bg-[#F8FAFC] dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
+            <div data-reveal className="reveal-item rounded-3xl p-8 bg-[#F8FAFC] dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 transition-all duration-500 hover:-translate-y-2 hover:scale-[1.01] hover:shadow-xl dark:hover:border-brand-800">
               <div className="w-14 h-14 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center mb-6">
                 <FileX className="w-7 h-7" />
               </div>
@@ -352,7 +417,7 @@ export default function HomePage() {
               </p>
             </div>
 
-            <div className="rounded-3xl p-8 bg-[#F8FAFC] dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
+            <div data-reveal className="reveal-item rounded-3xl p-8 bg-[#F8FAFC] dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 transition-all duration-500 hover:-translate-y-2 hover:scale-[1.01] hover:shadow-xl dark:hover:border-brand-800">
               <div className="w-14 h-14 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center mb-6">
                 <Calculator className="w-7 h-7" />
               </div>
@@ -362,7 +427,7 @@ export default function HomePage() {
               </p>
             </div>
 
-            <div className="rounded-3xl p-8 bg-[#F8FAFC] dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
+            <div data-reveal className="reveal-item rounded-3xl p-8 bg-[#F8FAFC] dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 transition-all duration-500 hover:-translate-y-2 hover:scale-[1.01] hover:shadow-xl dark:hover:border-brand-800">
               <div className="w-14 h-14 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center mb-6">
                 <Hourglass className="w-7 h-7" />
               </div>
@@ -388,7 +453,7 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="bg-white dark:bg-slate-800 rounded-3xl p-8 sm:p-10 border border-slate-200 dark:border-slate-700">
+            <div data-reveal className="reveal-item bg-white dark:bg-slate-800 rounded-3xl p-8 sm:p-10 border border-slate-200 dark:border-slate-700 transition-all duration-500 hover:-translate-y-2 hover:scale-[1.01] hover:shadow-xl dark:hover:border-brand-800">
               <div className="w-14 h-14 rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center mb-6">
                 <Zap className="w-7 h-7" />
               </div>
@@ -398,7 +463,7 @@ export default function HomePage() {
               </p>
             </div>
 
-            <div className="bg-white dark:bg-slate-800 rounded-3xl p-8 sm:p-10 border border-slate-200 dark:border-slate-700">
+            <div data-reveal className="reveal-item bg-white dark:bg-slate-800 rounded-3xl p-8 sm:p-10 border border-slate-200 dark:border-slate-700 transition-all duration-500 hover:-translate-y-2 hover:scale-[1.01] hover:shadow-xl dark:hover:border-brand-800">
               <div className="w-14 h-14 rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center mb-6">
                 <Percent className="w-7 h-7" />
               </div>
@@ -408,7 +473,7 @@ export default function HomePage() {
               </p>
             </div>
 
-            <div className="bg-white dark:bg-slate-800 rounded-3xl p-8 sm:p-10 border border-slate-200 dark:border-slate-700">
+            <div data-reveal className="reveal-item bg-white dark:bg-slate-800 rounded-3xl p-8 sm:p-10 border border-slate-200 dark:border-slate-700 transition-all duration-500 hover:-translate-y-2 hover:scale-[1.01] hover:shadow-xl dark:hover:border-brand-800">
               <div className="w-14 h-14 rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center mb-6">
                 <Activity className="w-7 h-7" />
               </div>
@@ -418,7 +483,7 @@ export default function HomePage() {
               </p>
             </div>
 
-            <div className="bg-white dark:bg-slate-800 rounded-3xl p-8 sm:p-10 border border-slate-200 dark:border-slate-700">
+            <div data-reveal className="reveal-item bg-white dark:bg-slate-800 rounded-3xl p-8 sm:p-10 border border-slate-200 dark:border-slate-700 transition-all duration-500 hover:-translate-y-2 hover:scale-[1.01] hover:shadow-xl dark:hover:border-brand-800">
               <div className="w-14 h-14 rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center mb-6">
                 <Contact className="w-7 h-7" />
               </div>
@@ -444,7 +509,7 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="rounded-3xl p-8 bg-[#F8FAFC] dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 flex flex-col justify-between">
+            <div data-reveal className="reveal-item rounded-3xl p-8 bg-[#F8FAFC] dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 flex flex-col justify-between transition-all duration-500 hover:-translate-y-2 hover:scale-[1.01] hover:shadow-xl dark:hover:border-brand-800">
               <div>
                 <h3 className="text-xl font-bold">Plan Découverte</h3>
                 <div className="my-6">
@@ -461,7 +526,7 @@ export default function HomePage() {
               </Link>
             </div>
 
-            <div className="relative rounded-3xl p-8 sm:p-10 bg-white dark:bg-slate-800 border-2 border-brand-500 shadow-xl flex flex-col justify-between -translate-y-2">
+            <div data-reveal className="reveal-item relative rounded-3xl p-8 sm:p-10 bg-white dark:bg-slate-800 border-2 border-brand-500 shadow-xl flex flex-col justify-between -translate-y-2 transition-all duration-500 hover:-translate-y-3 hover:scale-[1.01] hover:shadow-2xl">
               <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-xs font-bold bg-brand-500 text-white uppercase">
                 🔥 Le plus populaire
               </div>
@@ -483,7 +548,7 @@ export default function HomePage() {
               </Link>
             </div>
 
-            <div className="rounded-3xl p-8 bg-[#F8FAFC] dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 flex flex-col justify-between">
+            <div data-reveal className="reveal-item rounded-3xl p-8 bg-[#F8FAFC] dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 flex flex-col justify-between transition-all duration-500 hover:-translate-y-2 hover:scale-[1.01] hover:shadow-xl dark:hover:border-brand-800">
               <div>
                 <h3 className="text-xl font-bold">Plan Business</h3>
                 <div className="my-6">
@@ -511,37 +576,73 @@ export default function HomePage() {
             <span className="font-bold text-slate-900 dark:text-white">Facture&apos;Easy</span>
             <span>— SaaS de facturation en Afrique</span>
           </div>
-          <p>Fait avec fierté en Afrique 🌍 © 2026</p>
         </div>
       </footer>
 
       <Modal
         open={registerModalOpen}
         onClose={() => setRegisterModalOpen(false)}
-        title="Créer votre compte Facture'Easy"
-        description="Commencez dès aujourd'hui à facturer en FCFA et à suivre vos paiements en temps réel."
-        size="sm"
+        title="Bienvenue chez Facture'Easy"
+        description="Créez votre espace ou connectez-vous pour gérer vos factures, paiements et trésorerie en quelques minutes."
+        size="md"
       >
-        <div className="space-y-3">
-          <div className="rounded-2xl border border-brand-100 bg-gradient-to-br from-brand-50 to-emerald-50 p-4 text-left dark:border-brand-900/60 dark:from-brand-950/40 dark:to-emerald-900/20">
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-brand-600 dark:text-brand-300">
-              Inscription
-            </p>
-            <p className="mt-2 text-sm text-slate-700 dark:text-slate-200">
-              Créez votre compte pour démarrer votre facturation, gérer vos paiements et suivre votre trésorerie en temps réel.
-            </p>
+        <div className="space-y-4 sm:space-y-5">
+          <div className="rounded-[26px] border border-brand-100 bg-gradient-to-br from-brand-50 via-white to-emerald-50 p-4 sm:p-5 text-left dark:border-brand-900/60 dark:from-brand-950/40 dark:via-slate-900 dark:to-emerald-900/20">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <p className="text-[10px] font-black uppercase tracking-[0.22em] text-brand-600 dark:text-brand-300 sm:text-[11px]">
+                  Accès rapide
+                </p>
+                <h4 className="mt-2 text-lg font-black text-slate-900 dark:text-white sm:text-xl">
+                  Démarrez votre facturation
+                </h4>
+              </div>
+              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white text-brand-600 shadow-sm ring-1 ring-brand-100 dark:bg-slate-900 dark:text-brand-300 dark:ring-brand-900/60 sm:h-12 sm:w-12">
+                <Sparkles className="h-4 w-4 sm:h-5 sm:w-5" />
+              </div>
+            </div>
+
+            <div className="mt-4 flex flex-wrap items-center gap-2 text-[11px] text-slate-600 dark:text-slate-300 sm:text-xs">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-white/80 px-2.5 py-1 font-semibold ring-1 ring-slate-200 dark:bg-slate-900/60 dark:ring-slate-700">
+                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
+                Sans carte bancaire
+              </span>
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-white/80 px-2.5 py-1 font-semibold ring-1 ring-slate-200 dark:bg-slate-900/60 dark:ring-slate-700">
+                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
+                En moins de 2 min
+              </span>
+            </div>
           </div>
 
-          <Link href="/login" onClick={() => setRegisterModalOpen(false)}>
-            <Button className="w-full">Créer mon compte</Button>
-          </Link>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <Link href="/login?mode=signup" onClick={() => setRegisterModalOpen(false)} className="block">
+              <Button className="w-full justify-between text-sm sm:text-base">
+                <span className="flex items-center gap-2">
+                  <Sparkles className="h-4 w-4" />
+                  Créer mon compte
+                </span>
+                <ArrowRight className="h-4 w-4" />
+              </Button>
+            </Link>
 
-          <Link href="/login" onClick={() => setRegisterModalOpen(false)}>
-            <Button variant="ghost" className="w-full">Je me connecte</Button>
-          </Link>
+            <Link href="/login?mode=login" onClick={() => setRegisterModalOpen(false)} className="block">
+              <Button variant="outline" className="w-full justify-between text-sm sm:text-base">
+                <span className="flex items-center gap-2">
+                  <Lock className="h-4 w-4 text-brand-500" />
+                  Se connecter
+                </span>
+                <ArrowRight className="h-4 w-4" />
+              </Button>
+            </Link>
+          </div>
+
+          <div className="flex items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2 text-center text-[11px] font-medium text-slate-600 dark:border-slate-700 dark:bg-slate-800/80 dark:text-slate-300 sm:text-xs">
+            <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+            Facturation, paiements et suivi en temps réel.
+          </div>
 
           <Button variant="ghost" className="w-full" onClick={() => setRegisterModalOpen(false)}>
-            Fermer
+            Plus tard
           </Button>
         </div>
       </Modal>
