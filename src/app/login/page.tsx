@@ -68,7 +68,11 @@ export default async function LoginPage({
             </div>
           )}
 
-          <form className="space-y-4">
+          <form
+            action={isSignupMode ? signup : login}
+            method="post"
+            className="space-y-4"
+          >
             {/* Email */}
             <div>
               <label className="block text-xs font-semibold text-slate-300 mb-1.5">
@@ -102,6 +106,7 @@ export default async function LoginPage({
             {/* Boutons */}
             <div className="pt-2 space-y-3">
               <button
+                type="submit"
                 formAction={login}
                 className={`w-full py-3 px-6 rounded-xl text-sm font-bold transition-all duration-200 hover:-translate-y-0.5 ${
                   isSignupMode
@@ -122,6 +127,7 @@ export default async function LoginPage({
               </div>
 
               <button
+                type="submit"
                 formAction={signup}
                 className={`w-full py-3 px-6 rounded-xl text-sm font-bold transition-all duration-200 hover:-translate-y-0.5 ${
                   isSignupMode
@@ -136,7 +142,7 @@ export default async function LoginPage({
 
           {/* Footer */}
           <p className="text-center text-xs text-slate-500 mt-6">
-            Devise : FCFA • TVA 18% SYSCOHADA • Sénégal 🇸🇳
+            Devise : FCFA • TVA 18% SYSCOHADA
           </p>
         </div>
       </div>

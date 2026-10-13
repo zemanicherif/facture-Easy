@@ -1,66 +1,99 @@
-import { NextResponse } from 'next/server';
-import { getPlanCatalog, stripe, type PaymentMethod } from '@/lib/stripe';
+import { NextResponse } from 'next/server'
 
-const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3001';
+import { createAdminClient } from '@/lib/supabase/admin'
+import { createClient } from '@/lib/supabase/server'
+import { createCheckoutSession } from '@/lib/saspay'
 
 export async function POST(request: Request) {
-  const body = (await request.json()) as { plan?: string; email?: string; paymentMethod?: PaymentMethod };
-  const plan = (body.plan === 'starter' || body.plan === 'pro' || body.plan === 'business')
-    ? body.plan
-    : 'pro';
-  const paymentMethod = body.paymentMethod ?? 'stripe';
-  const selectedPlan = getPlanCatalog(plan);
+  let body: Record<string, FormDataEntryValue | string | undefined> = {}
 
-  if (plan === 'starter') {
-    return NextResponse.json({
-      ok: true,
-      url: `${appUrl}/login?mode=signup&plan=starter`,
-      demo: true,
-    });
+  try {
+    const contentType = request.headers.get('content-type') || ''
+
+    if (contentType.includes('application/json')) {
+      body = await request.json()
+    } else {
+      const formData = await request.formData()
+      body = Object.fromEntries(formData.entries())
+    }
+  } catch {
+    body = {}
   }
 
-  const isLocalMethod = ['wave', 'orange-money', 'momo', 'bank-transfer'].includes(paymentMethod);
+  const plan = body.plan === 'pro' ? 'pro' : 'free'
+  const siteUrl =
+    process.env.NEXT_PUBLIC_APP_URL ||
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3002')
 
-  if (isLocalMethod || !stripe) {
-    return NextResponse.json({
-      ok: true,
-      demo: true,
-      url: `${appUrl}/checkout/success?plan=${plan}&method=${paymentMethod}&demo=1`,
-      message: 'Paiement local ou démo activé : l’accès au compte est préparé automatiquement après validation.',
-    });
+  const supabase = await createClient()
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser()
+
+  if (error || !user) {
+    return NextResponse.json({ ok: false, error: 'Unauthorized' }, { status: 401 })
   }
 
-  const session = await stripe.checkout.sessions.create({
-    mode: 'subscription',
-    customer_email: body.email || undefined,
-    line_items: [
-      {
-        price_data: {
-          currency: selectedPlan.currency,
-          unit_amount: selectedPlan.price,
-          recurring: {
-            interval: selectedPlan.interval,
-          },
-          product_data: {
-            name: selectedPlan.name,
-            description: selectedPlan.description,
-          },
-        },
-        quantity: 1,
+  if (plan !== 'pro') {
+    const admin = createAdminClient()
+    await admin.from('profiles').upsert({
+      id: user.id,
+      plan: 'free',
+      pro_until: null,
+      updated_at: new Date().toISOString(),
+    }, { onConflict: 'id' })
+
+    return NextResponse.redirect(new URL('/dashboard', siteUrl), 303)
+  }
+
+  try {
+    const successUrl = `${siteUrl}/dashboard?payment=success`
+    const cancelUrl = `${siteUrl}/dashboard?payment=cancelled`
+    const session = await createCheckoutSession({
+      userId: user.id,
+      email: user.email || '',
+      name: user.email?.split('@')[0] || 'Client',
+      successUrl,
+      cancelUrl,
+    })
+
+    const admin = createAdminClient()
+    await admin.from('payments').insert({
+      user_id: user.id,
+      plan: 'pro',
+      amount: 5000,
+      currency: 'XOF',
+      status: 'pending',
+      provider: 'saspay',
+      provider_checkout_id: session.id,
+      provider_reference: session.id,
+      checkout_url: session.checkout_url,
+      return_url: successUrl,
+      cancel_url: cancelUrl,
+      metadata: {
+        plan: 'pro',
+        source: 'factureeasy',
+        user_id: user.id,
       },
-    ],
-    success_url: `${appUrl}/checkout/success?plan=${plan}&method=${paymentMethod}&session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${appUrl}/checkout/cancel?plan=${plan}&method=${paymentMethod}`,
-    metadata: {
-      plan,
-      paymentMethod,
-      source: 'factureeasy',
-    },
-    allow_promotion_codes: true,
-  });
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    })
 
-  return NextResponse.json({
-    ok: true,
-    url: session.url,
-  });
+    if (request.headers.get('content-type')?.includes('application/json')) {
+      return NextResponse.json({ ok: true, checkout_url: session.checkout_url })
+    }
+
+    return NextResponse.redirect(session.checkout_url, 303)
+  } catch (error) {
+    console.error('SasPay checkout route error:', error)
+    return NextResponse.json(
+      {
+        ok: false,
+        error: error instanceof Error ? error.message : 'Payment creation failed',
+      },
+      { status: 500 }
+    )
+  }
 }

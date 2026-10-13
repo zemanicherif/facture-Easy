@@ -38,6 +38,12 @@ export default function DashboardPage() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; invoiceNumber: string } | null>(null);
+  const [billing, setBilling] = useState<{ plan: string; active: boolean; paymentStatus: string; pro_until: string | null }>({
+    plan: 'free',
+    active: false,
+    paymentStatus: 'none',
+    pro_until: null,
+  });
   const datePickerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -47,7 +53,27 @@ export default function DashboardPage() {
       setInvoices(data);
       setLoading(false);
     }
+
+    async function loadBillingStatus() {
+      try {
+        const response = await fetch('/api/billing/status', { cache: 'no-store' });
+        if (!response.ok) return;
+        const data = await response.json();
+        setBilling({
+          plan: data.plan ?? 'free',
+          active: Boolean(data.active),
+          paymentStatus: data.paymentStatus ?? 'none',
+          pro_until: data.pro_until ?? null,
+        });
+      } catch (error) {
+        console.error('Unable to load billing status:', error);
+      }
+    }
+
     loadData();
+    loadBillingStatus();
+    const interval = window.setInterval(loadBillingStatus, 15000);
+    return () => window.clearInterval(interval);
   }, []);
 
   useEffect(() => {
@@ -128,7 +154,40 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      
+      {(billing.paymentStatus === 'pending' || billing.active || billing.plan === 'pro' || billing.plan === 'free') && (
+        <Card className="p-5">
+          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
+                Abonnement
+              </p>
+              {billing.active && billing.pro_until ? (
+                <p className="mt-1 text-lg font-bold text-emerald-700">
+                  Pro actif jusqu’au {new Date(billing.pro_until).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' })}
+                </p>
+              ) : billing.paymentStatus === 'pending' ? (
+                <p className="mt-1 text-lg font-bold text-amber-700">
+                  Paiement en cours de vérification. Rafraîchissement automatique.
+                </p>
+              ) : (
+                <p className="mt-1 text-lg font-bold text-slate-800">
+                  Plan gratuit • Activez le forfait Pro pour débloquer les fonctionnalités premium.
+                </p>
+              )}
+            </div>
+
+            {!billing.active && (
+              <form action="/api/checkout" method="POST">
+                <input type="hidden" name="plan" value="pro" />
+                <Button type="submit" className="whitespace-nowrap">
+                  {billing.paymentStatus === 'pending' ? 'Vérifier le paiement' : 'Passer au Pro'}
+                </Button>
+              </form>
+            )}
+          </div>
+        </Card>
+      )}
+
       {/* 4 KPI CARDS (SalesSync Style Exact) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
         
@@ -474,6 +533,7 @@ export default function DashboardPage() {
         title="Supprimer cette facture ?"
         description="Cette action va retirer définitivement la facture de votre tableau de bord et de l’historique."
         size="sm"
+        variant="danger"
       >
         <div className="flex items-center justify-end gap-3">
           <Button variant="ghost" onClick={() => setDeleteTarget(null)}>

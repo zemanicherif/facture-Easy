@@ -1,14 +1,7 @@
 import Stripe from 'stripe';
 
 export type SubscriptionPlan = 'starter' | 'pro' | 'business';
-export type PaymentMethod =
-  | 'stripe'
-  | 'wave'
-  | 'orange-money'
-  | 'momo'
-  | 'bank-transfer'
-  | 'card'
-  | 'crypto';
+export type PaymentMethod = 'saspay';
 
 export const planCatalog: Record<
   SubscriptionPlan,
@@ -51,26 +44,10 @@ export function getPlanCatalog(plan: SubscriptionPlan) {
   return planCatalog[plan] ?? planCatalog.pro;
 }
 
-export function getPreferredPaymentMethods(countryCode?: string): PaymentMethod[] {
-  const localAfricanCountries = new Set([
-    'bf', 'bj', 'cm', 'ci', 'cg', 'ga', 'gn', 'ml', 'mr', 'ne', 'sn', 'td', 'tg', 'cd', 'cf', 'dz', 'eg', 'gh', 'ke', 'ng', 'rw', 'sl', 'tz', 'ug', 'za'
-  ]);
-
-  const normalized = (countryCode ?? '').toLowerCase();
-
-  if (localAfricanCountries.has(normalized)) {
-    return ['wave', 'orange-money', 'momo', 'bank-transfer', 'stripe', 'crypto'];
-  }
-
-  return ['stripe', 'card', 'crypto'];
+export function getPreferredPaymentMethods(_countryCode?: string): PaymentMethod[] {
+  return ['saspay'];
 }
 
 export const paymentMethodLabels: Record<PaymentMethod, string> = {
-  stripe: 'Stripe / Carte internationale',
-  wave: 'Wave',
-  'orange-money': 'Orange Money',
-  momo: 'MoMo / Mobile Money',
-  'bank-transfer': 'Virement local',
-  card: 'Carte bancaire',
-  crypto: 'Crypto',
+  saspay: 'SasPay',
 };

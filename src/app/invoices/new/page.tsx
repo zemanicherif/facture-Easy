@@ -722,6 +722,7 @@ export default function NewInvoicePage() {
       title={dialog?.title || "Information"}
       description={dialog?.description || ""}
       size="sm"
+      variant={dialog?.variant || "success"}
     >
       <div className="flex justify-end">
         <Button onClick={() => setDialog(null)}>

@@ -29,7 +29,7 @@ export default function ClientsPage() {
   const [search, setSearch] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; name: string } | null>(null);
-  const [feedback, setFeedback] = useState<{ title: string; description: string } | null>(null);
+  const [feedback, setFeedback] = useState<{ title: string; description: string; variant?: "success" | "error" } | null>(null);
 
   // New Client Form state
   const [name, setName] = useState("");
@@ -75,9 +75,14 @@ export default function ClientsPage() {
       setFeedback({
         title: "Client ajouté avec succès",
         description: `${name} a bien été enregistré dans votre portefeuille clients.`,
+        variant: "success",
       });
     } catch (err) {
-      alert("Erreur lors de la création du client");
+      setFeedback({
+        title: "Création impossible",
+        description: "Le client n’a pas pu être enregistré. Vérifiez les informations puis réessayez.",
+        variant: "error",
+      });
     }
   };
 
@@ -94,10 +99,15 @@ export default function ClientsPage() {
       setFeedback({
         title: "Client supprimé",
         description: `${deleteTarget.name} a été retiré de votre répertoire.`,
+        variant: "success",
       });
     } catch (err) {
-      alert("Impossible de supprimer ce client (il possède peut-être des factures).");
       setDeleteTarget(null);
+      setFeedback({
+        title: "Suppression impossible",
+        description: "Ce client n’a pas pu être retiré. Il possède peut-être encore des factures associées.",
+        variant: "error",
+      });
     }
   };
 
@@ -294,6 +304,7 @@ export default function ClientsPage() {
         title="Supprimer ce client ?"
         description="Cette action est irréversible. Le client sera retiré du portefeuille et les références associées ne seront plus visibles."
         size="sm"
+        variant="danger"
       >
         <div className="flex items-center justify-end gap-3">
           <Button variant="ghost" onClick={() => setDeleteTarget(null)}>
@@ -311,9 +322,12 @@ export default function ClientsPage() {
         title={feedback?.title || "Notification"}
         description={feedback?.description || ""}
         size="sm"
+        variant={feedback?.variant || "success"}
       >
         <div className="flex justify-end">
-          <Button onClick={() => setFeedback(null)}>Continuer</Button>
+          <Button onClick={() => setFeedback(null)}>
+            {feedback?.variant === "error" ? "Réessayer" : "Continuer"}
+          </Button>
         </div>
       </Modal>
 

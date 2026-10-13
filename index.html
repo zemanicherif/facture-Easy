@@ -131,6 +131,27 @@
       background-color: rgba(16, 185, 129, 0.2);
       color: #34D399;
     }
+
+    .site-overlay {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+    .site-overlay.is-open {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+    .site-overlay .site-panel {
+      opacity: 0;
+      transform: translateY(18px) scale(0.96);
+      transition: opacity 0.32s cubic-bezier(0.22, 1, 0.36, 1), transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .site-overlay.is-open .site-panel {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
   </style>
 </head>
 
@@ -1254,8 +1275,8 @@
   <!-- ========================================== -->
   <!-- MODAL: CRÉER UNE FACTURE (INTERACTIF)       -->
   <!-- ========================================== -->
-  <div id="createInvoiceModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl border border-slate-200 dark:border-slate-700 max-h-[90vh] overflow-y-auto">
+  <div id="createInvoiceModal" class="site-overlay fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xl flex items-center justify-center p-4">
+    <div class="site-panel bg-white/90 dark:bg-slate-900/90 rounded-[32px] max-w-xl w-full p-6 sm:p-8 shadow-[0_40px_140px_-24px_rgba(15,23,42,0.55)] border border-white/70 dark:border-slate-700 max-h-[90vh] overflow-y-auto backdrop-blur-2xl">
       
       <div class="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
         <div>
@@ -1332,8 +1353,8 @@
   <!-- ========================================== -->
   <!-- MODAL: INSCRIPTION RAPIDE (DEMO CTA)       -->
   <!-- ========================================== -->
-  <div id="registerModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full p-8 shadow-2xl border border-slate-200 dark:border-slate-700 text-center">
+  <div id="registerModal" class="site-overlay fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xl flex items-center justify-center p-4">
+    <div class="site-panel bg-white/90 dark:bg-slate-900/90 rounded-[32px] max-w-md w-full p-8 shadow-[0_40px_140px_-24px_rgba(15,23,42,0.55)] border border-white/70 dark:border-slate-700 text-center backdrop-blur-2xl">
       <div class="w-12 h-12 rounded-2xl bg-brand-100 dark:bg-brand-950 text-brand-600 dark:text-brand-400 flex items-center justify-center mx-auto mb-4">
         <i data-lucide="sparkles" class="w-6 h-6"></i>
       </div>
@@ -1368,6 +1389,26 @@
       <p class="text-[11px] text-slate-400 mt-4">
         En vous inscrivant, vous acceptez nos CGU. 14 jours d'essai Pro offerts.
       </p>
+    </div>
+  </div>
+
+  <div id="siteDialog" class="site-overlay fixed inset-0 z-[70] bg-slate-950/60 backdrop-blur-xl flex items-center justify-center p-4" onclick="if (event.target === this) closeSiteDialog(false)">
+    <div class="site-panel relative w-full max-w-md overflow-hidden rounded-[32px] border border-white/70 bg-white/90 p-7 shadow-[0_40px_140px_-24px_rgba(15,23,42,0.55)] backdrop-blur-2xl dark:border-slate-700 dark:bg-slate-900/90">
+      <div id="siteDialogAccent" class="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-brand-500 via-emerald-400 to-cyan-400"></div>
+      <button type="button" onclick="closeSiteDialog(false)" class="absolute right-4 top-4 p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800">
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
+      <div id="siteDialogIcon" class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-50 text-brand-600 ring-1 ring-brand-100 dark:bg-brand-950 dark:text-brand-300"></div>
+      <h3 id="siteDialogTitle" class="text-xl font-black tracking-tight text-slate-900 dark:text-white"></h3>
+      <p id="siteDialogDescription" class="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300"></p>
+      <div class="mt-6 flex items-center justify-end gap-3">
+        <button id="siteDialogCancel" type="button" onclick="closeSiteDialog(false)" class="hidden px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">
+          Annuler
+        </button>
+        <button id="siteDialogConfirm" type="button" onclick="closeSiteDialog(true)" class="px-5 py-2.5 rounded-xl text-xs font-bold text-white bg-brand-500 hover:bg-brand-600 shadow-md shadow-brand-500/25">
+          Continuer
+        </button>
+      </div>
     </div>
   </div>
 
@@ -1492,7 +1533,7 @@
           </td>
           <td class="py-3.5 px-3 text-right">
             <div class="flex items-center justify-end gap-1 text-slate-400">
-              <button title="Voir la facture" onclick="alert('Visualisation de la facture ' + '${inv.id}')" class="p-1 rounded hover:text-brand-500 hover:bg-brand-50 dark:hover:bg-slate-700"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
+              <button title="Voir la facture" onclick="showInvoicePreview('${inv.id}')" class="p-1 rounded hover:text-brand-500 hover:bg-brand-50 dark:hover:bg-slate-700"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
               <button title="Plus d'options" class="p-1 rounded hover:text-slate-600 dark:hover:text-slate-200"><i data-lucide="more-horizontal" class="w-4 h-4"></i></button>
               <button title="Supprimer" onclick="deleteInvoice('${inv.id}')" class="p-1 rounded hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-slate-700"><i data-lucide="trash-2" class="w-4 h-4 text-rose-400"></i></button>
             </div>
@@ -1557,12 +1598,29 @@
       renderInvoiceTable(filtered);
     }
 
-    // Delete Invoice
+    function showInvoicePreview(id) {
+      const invoice = invoices.find((item) => item.id === id);
+      if (!invoice) return;
+      openSiteDialog({
+        variant: "default",
+        title: `Facture ${invoice.id}`,
+        description: `${invoice.client} — ${formatFCFA(invoice.amountTTC)} TTC. Échéance ${invoice.dueDate}, statut ${invoice.status}.`,
+        confirmLabel: "Fermer",
+      });
+    }
+
     function deleteInvoice(id) {
-      if (confirm(`Voulez-vous supprimer la facture ${id} ?`)) {
-        invoices = invoices.filter(i => i.id !== id);
-        renderInvoiceTable(invoices);
-      }
+      openSiteDialog({
+        variant: "danger",
+        title: "Supprimer cette facture ?",
+        description: `La facture ${id} sera retirée de la démonstration live. Cette action est immédiate.`,
+        confirmLabel: "Confirmer la suppression",
+        cancelLabel: "Annuler",
+        onConfirm: () => {
+          invoices = invoices.filter(i => i.id !== id);
+          renderInvoiceTable(invoices);
+        }
+      });
     }
 
     // VAT 18% Calculation
@@ -1606,23 +1664,78 @@
       document.getElementById('newInvoiceForm').reset();
       calculateVAT();
       
-      // Feedback
-      alert(`🎉 Facture ${newId} créée avec succès avec ${formatFCFA(ttc)} TTC (TVA 18% incluse) !`);
+      openSiteDialog({
+        variant: "success",
+        title: "Facture créée avec succès",
+        description: `La facture ${newId} a été générée pour ${formatFCFA(ttc)} TTC, TVA 18% incluse.`,
+        confirmLabel: "Parfait",
+      });
     }
 
     // Handle Register Demo
     function handleRegister(e) {
       e.preventDefault();
       closeModal('registerModal');
-      alert("🚀 Bienvenue sur Facture'Easy ! Votre espace entreprise est prêt.");
+      openSiteDialog({
+        variant: "success",
+        title: "Bienvenue sur Facture'Easy",
+        description: "Votre espace entreprise est prêt. Vous pouvez dès maintenant facturer en FCFA.",
+        confirmLabel: "Continuer",
+      });
+    }
+
+    let siteDialogConfirmHandler = null;
+
+    function openSiteDialog({ variant = "default", title, description, confirmLabel = "Continuer", cancelLabel, onConfirm }) {
+      const overlay = document.getElementById("siteDialog");
+      const accent = document.getElementById("siteDialogAccent");
+      const icon = document.getElementById("siteDialogIcon");
+      const cancelBtn = document.getElementById("siteDialogCancel");
+      const confirmBtn = document.getElementById("siteDialogConfirm");
+      const looks = {
+        default: { accent: "from-brand-500 via-emerald-400 to-cyan-400", icon: "sparkles", iconClass: "bg-brand-50 text-brand-600 ring-brand-100 dark:bg-brand-950 dark:text-brand-300" },
+        success: { accent: "from-emerald-500 via-brand-400 to-teal-400", icon: "check-circle-2", iconClass: "bg-emerald-50 text-emerald-600 ring-emerald-100 dark:bg-emerald-950 dark:text-emerald-300" },
+        danger: { accent: "from-rose-500 via-pink-400 to-orange-400", icon: "trash-2", iconClass: "bg-rose-50 text-rose-600 ring-rose-100 dark:bg-rose-950 dark:text-rose-300" },
+      };
+      const look = looks[variant] || looks.default;
+
+      document.getElementById("siteDialogTitle").textContent = title;
+      document.getElementById("siteDialogDescription").textContent = description;
+      accent.className = `absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r ${look.accent}`;
+      icon.className = `mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl ring-1 ${look.iconClass}`;
+      icon.innerHTML = `<i data-lucide="${look.icon}" class="w-5 h-5"></i>`;
+      confirmBtn.textContent = confirmLabel;
+      confirmBtn.className = variant === "danger"
+        ? "px-5 py-2.5 rounded-xl text-xs font-bold text-white bg-rose-500 hover:bg-rose-600 shadow-md shadow-rose-500/25"
+        : "px-5 py-2.5 rounded-xl text-xs font-bold text-white bg-brand-500 hover:bg-brand-600 shadow-md shadow-brand-500/25";
+
+      if (cancelLabel) {
+        cancelBtn.textContent = cancelLabel;
+        cancelBtn.classList.remove("hidden");
+      } else {
+        cancelBtn.classList.add("hidden");
+      }
+
+      siteDialogConfirmHandler = onConfirm || null;
+      overlay.classList.add("is-open");
+      lucide.createIcons();
+    }
+
+    function closeSiteDialog(confirmed) {
+      document.getElementById("siteDialog").classList.remove("is-open");
+      if (confirmed && typeof siteDialogConfirmHandler === "function") {
+        siteDialogConfirmHandler();
+      }
+      siteDialogConfirmHandler = null;
     }
 
     // Modal helpers
     function openModal(id) {
-      document.getElementById(id).classList.remove('hidden');
+      document.getElementById(id).classList.add("is-open");
+      lucide.createIcons();
     }
     function closeModal(id) {
-      document.getElementById(id).classList.add('hidden');
+      document.getElementById(id).classList.remove("is-open");
     }
 
     // Theme toggle

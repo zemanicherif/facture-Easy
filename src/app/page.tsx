@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   Sparkles,
   Play,
@@ -49,7 +50,7 @@ import { Modal } from "@/components/ui/Modal";
 import { formatFCFA } from "@/lib/utils";
 import { initialInvoices } from "@/lib/mockData";
 import { Invoice, InvoiceStatus } from "@/lib/types";
-import { getPreferredPaymentMethods, paymentMethodLabels, type PaymentMethod, type SubscriptionPlan } from "@/lib/stripe";
+import { type SubscriptionPlan } from "@/lib/stripe";
 
 const getDefaultCountry = () => {
   const locale =
@@ -80,10 +81,8 @@ export default function HomePage() {
   const [activeFilter, setActiveFilter] = useState<"all" | InvoiceStatus>("all");
   const [isDark, setIsDark] = useState(false);
   const [registerModalOpen, setRegisterModalOpen] = useState(false);
-  const [paymentModalOpen, setPaymentModalOpen] = useState(false);
-  const [selectedPlan, setSelectedPlan] = useState<SubscriptionPlan | null>(null);
   const [selectedCountry, setSelectedCountry] = useState(getDefaultCountry);
-  const paymentOptions = getPreferredPaymentMethods(selectedCountry);
+  const router = useRouter();
 
   useEffect(() => {
     const revealItems = document.querySelectorAll("[data-reveal]") as NodeListOf<HTMLElement>;
@@ -134,7 +133,7 @@ export default function HomePage() {
   const countPending = invoices.filter((i) => i.status === "En attente").length;
   const countUnpaid = invoices.filter((i) => i.status === "Impayée").length;
 
-  const handlePlanCheckout = async (plan: SubscriptionPlan, paymentMethod?: PaymentMethod) => {
+  const handlePlanCheckout = async (plan: SubscriptionPlan) => {
     if (plan === "starter") {
       window.location.href = "/login?mode=signup&plan=starter";
       return;
@@ -146,10 +145,15 @@ export default function HomePage() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ plan, paymentMethod: paymentMethod ?? "stripe" }),
+        body: JSON.stringify({ plan }),
       });
 
       const data = await response.json();
+
+      if (data?.checkout_url) {
+        window.location.href = data.checkout_url;
+        return;
+      }
 
       if (data?.url) {
         window.location.href = data.url;
@@ -161,11 +165,6 @@ export default function HomePage() {
       console.error("Checkout error:", error);
       window.location.href = `/login?mode=signup&plan=${plan}`;
     }
-  };
-
-  const openPaymentModal = (plan: SubscriptionPlan) => {
-    setSelectedPlan(plan);
-    setPaymentModalOpen(true);
   };
 
   return (
@@ -228,10 +227,10 @@ export default function HomePage() {
       <section data-reveal className="reveal-item relative pt-12 pb-20 md:pt-20 md:pb-32 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
           
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-50 dark:bg-brand-950/60 border border-brand-200 dark:border-brand-800 text-brand-700 dark:text-brand-300 text-xs sm:text-sm font-semibold mb-8 shadow-sm">
-            <span className="flex h-2 w-2 rounded-full bg-brand-500 animate-pulse" />
-            <span>Conçu pour les entrepreneurs & PME d&apos;Afrique</span>
-            <span className="text-brand-500 font-mono">FCFA / TVA 18%</span>
+          <div className="animate-float inline-flex max-w-full flex-wrap items-center justify-center gap-2 rounded-full border border-brand-200 bg-brand-50/90 px-3 py-1.5 text-[10px] font-semibold text-brand-700 shadow-[0_8px_20px_rgba(16,185,129,0.10)] backdrop-blur-sm transition-transform duration-300 dark:border-brand-800 dark:bg-brand-950/60 dark:text-brand-300 sm:px-4 sm:text-sm">
+            <span className="flex h-2.5 w-2.5 shrink-0 rounded-full bg-brand-500 shadow-[0_0_12px_rgba(16,185,129,0.35)] animate-pulse [animation-duration:2.8s]" />
+            <span className="text-center">Conçu pour les entrepreneurs & PME d&apos;Afrique</span>
+            <span className="font-mono text-brand-500">FCFA / TVA 18%</span>
           </div>
 
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-slate-900 dark:text-white max-w-4xl mx-auto leading-[1.12]">
@@ -242,9 +241,10 @@ export default function HomePage() {
           </h1>
 
           <div className="mt-5 flex justify-center">
-            <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-semibold tracking-[0.12em] text-emerald-700 uppercase shadow-sm dark:border-emerald-900/70 dark:bg-emerald-950/40 dark:text-emerald-300">
-              <span className="h-2 w-2 rounded-full bg-emerald-500" />
-              Faites vous payer immédiatement
+            <div className="group relative inline-flex -rotate-[3deg] items-center gap-2 overflow-hidden rounded-full border border-emerald-200 bg-emerald-50/95 px-3 py-1.5 text-[11px] font-semibold tracking-[0.12em] text-emerald-700 uppercase shadow-[0_8px_18px_rgba(16,185,129,0.10)] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:rotate-0 hover:shadow-[0_12px_24px_rgba(16,185,129,0.18)] dark:border-emerald-900/70 dark:bg-emerald-950/40 dark:text-emerald-300 sm:text-xs">
+              <span className="absolute inset-0 bg-[radial-gradient(circle_at_18%_50%,rgba(16,185,129,0.22),transparent_34%)]" />
+              <span className="relative flex h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_12px_rgba(16,185,129,0.95),0_0_22px_rgba(16,185,129,0.75)]" />
+              <span className="relative">Faites vous payer immédiatement</span>
             </div>
           </div>
 
@@ -582,7 +582,7 @@ export default function HomePage() {
                 </ul>
               </div>
               <div className="mt-8">
-                <Button className="w-full" onClick={() => openPaymentModal("pro")}>Choisir le Plan Pro</Button>
+                <Button className="w-full" onClick={() => handlePlanCheckout("pro")}>Choisir le Plan Pro</Button>
               </div>
             </div>
 
@@ -600,7 +600,7 @@ export default function HomePage() {
                 </ul>
               </div>
               <div className="mt-8">
-                <Button variant="outline" className="w-full" onClick={() => openPaymentModal("business")}>Choisir Business</Button>
+                <Button variant="outline" className="w-full" onClick={() => handlePlanCheckout("business")}>Choisir Business</Button>
               </div>
             </div>
           </div>
@@ -616,43 +616,6 @@ export default function HomePage() {
           </div>
         </div>
       </footer>
-
-      <Modal
-        open={paymentModalOpen}
-        onClose={() => setPaymentModalOpen(false)}
-        title="Choisissez votre mode de paiement"
-        description="Les méthodes locales sont priorisées pour l’Afrique. Les cartes et crypto sont proposées hors Afrique."
-        size="md"
-      >
-        <div className="space-y-4">
-          <div className="rounded-2xl border border-brand-100 bg-brand-50/60 p-3 text-sm text-slate-700 dark:border-brand-900/50 dark:bg-brand-950/20 dark:text-slate-200">
-            <span className="font-bold text-brand-700 dark:text-brand-300">Plan sélectionné :</span> {selectedPlan === "pro" ? "Plan Pro" : selectedPlan === "business" ? "Plan Business" : "Plan"}
-          </div>
-
-          <div className="grid gap-3">
-            {paymentOptions.map((method) => (
-              <button
-                key={method}
-                type="button"
-                onClick={() => {
-                  setPaymentModalOpen(false);
-                  if (selectedPlan) {
-                    handlePlanCheckout(selectedPlan, method);
-                  }
-                }}
-                className="flex w-full items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 py-3 text-left text-sm font-semibold text-slate-700 transition hover:border-brand-300 hover:bg-brand-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:border-brand-700 dark:hover:bg-slate-700"
-              >
-                <span>{paymentMethodLabels[method]}</span>
-                <span className="text-xs uppercase tracking-[0.14em] text-brand-600">Choisir</span>
-              </button>
-            ))}
-          </div>
-
-          <Button variant="ghost" className="w-full" onClick={() => setPaymentModalOpen(false)}>
-            Annuler
-          </Button>
-        </div>
-      </Modal>
 
       <Modal
         open={registerModalOpen}
@@ -690,25 +653,34 @@ export default function HomePage() {
           </div>
 
           <div className="grid gap-3 sm:grid-cols-2">
-            <Link href="/login?mode=signup" onClick={() => setRegisterModalOpen(false)} className="block">
-              <Button className="w-full justify-between text-sm sm:text-base">
-                <span className="flex items-center gap-2">
-                  <Sparkles className="h-4 w-4" />
-                  Créer mon compte
-                </span>
-                <ArrowRight className="h-4 w-4" />
-              </Button>
-            </Link>
+            <Button
+              className="w-full justify-between text-sm sm:text-base"
+              onClick={() => {
+                setRegisterModalOpen(false);
+                router.push("/login?mode=signup");
+              }}
+            >
+              <span className="flex items-center gap-2">
+                <Sparkles className="h-4 w-4" />
+                Créer mon compte
+              </span>
+              <ArrowRight className="h-4 w-4" />
+            </Button>
 
-            <Link href="/login?mode=login" onClick={() => setRegisterModalOpen(false)} className="block">
-              <Button variant="outline" className="w-full justify-between text-sm sm:text-base">
-                <span className="flex items-center gap-2">
-                  <Lock className="h-4 w-4 text-brand-500" />
-                  Se connecter
-                </span>
-                <ArrowRight className="h-4 w-4" />
-              </Button>
-            </Link>
+            <Button
+              variant="outline"
+              className="w-full justify-between text-sm sm:text-base"
+              onClick={() => {
+                setRegisterModalOpen(false);
+                router.push("/login?mode=login");
+              }}
+            >
+              <span className="flex items-center gap-2">
+                <Lock className="h-4 w-4 text-brand-500" />
+                Se connecter
+              </span>
+              <ArrowRight className="h-4 w-4" />
+            </Button>
           </div>
 
           <div className="flex items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2 text-center text-[11px] font-medium text-slate-600 dark:border-slate-700 dark:bg-slate-800/80 dark:text-slate-300 sm:text-xs">

@@ -4,45 +4,18 @@ import Link from 'next/link';
 import { Suspense, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 
-const planLabel: Record<string, string> = {
-  starter: 'Plan Découverte',
-  pro: 'Plan Pro',
-  business: 'Plan Business',
-};
-
-const paymentMethodLabel: Record<string, string> = {
-  stripe: 'Stripe',
-  wave: 'Wave',
-  'orange-money': 'Orange Money',
-  momo: 'MoMo',
-  'bank-transfer': 'Virement local',
-  card: 'Carte bancaire',
-  crypto: 'Crypto',
-};
-
 function CheckoutSuccessContent() {
   const searchParams = useSearchParams();
-  const plan = searchParams.get('plan') || 'pro';
-  const method = searchParams.get('method') || 'stripe';
-  const demo = searchParams.get('demo') === '1';
+  const payment = searchParams.get('payment');
 
   useEffect(() => {
-    const payload = {
-      plan,
-      method,
-      activatedAt: new Date().toISOString(),
-      demo,
-    };
-
-    localStorage.setItem('factureeasy_subscription', JSON.stringify(payload));
-    localStorage.setItem('factureeasy_account_ready', 'true');
-
     const timer = window.setTimeout(() => {
-      window.location.href = `/login?mode=signup&plan=${plan}`;
-    }, 1400);
+      const target = payment === 'success' ? '/dashboard?payment=success' : '/dashboard';
+      window.location.href = target;
+    }, 1200);
 
     return () => window.clearTimeout(timer);
-  }, [demo, plan]);
+  }, [payment]);
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-slate-950 px-6 py-10 text-white">
@@ -55,20 +28,18 @@ function CheckoutSuccessContent() {
           Paiement validé
         </p>
         <h1 className="mt-3 text-3xl font-black text-white">
-          Votre accès {planLabel[plan] || 'Plan Pro'} est activé
+          Votre paiement a bien été accepté
         </h1>
         <p className="mt-4 text-sm text-slate-300">
-          {demo
-            ? `Paiement via ${paymentMethodLabel[method] || 'méthode locale'} activé. Votre accès est préparé et l’ouverture du compte se lance automatiquement.`
-            : `Paiement via ${paymentMethodLabel[method] || 'Stripe'} validé. Nous ouvrons votre espace et vous redirigeons vers la création de compte.`}
+          Vous allez être redirigé vers votre tableau de bord pour finaliser l’accès au plan Pro.
         </p>
 
         <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
           <Link
-            href={`/login?mode=signup&plan=${plan}`}
+            href="/dashboard?payment=success"
             className="inline-flex items-center justify-center rounded-xl bg-emerald-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-emerald-400"
           >
-            Ouvrir mon espace
+            Voir mon tableau de bord
           </Link>
           <Link
             href="/"

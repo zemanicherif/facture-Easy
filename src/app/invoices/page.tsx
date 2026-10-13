@@ -255,6 +255,7 @@ export default function InvoicesPage() {
             title="Supprimer cette facture ?"
             description="Cette action supprimera la facture du journal sans possibilité de restauration depuis cette interface."
             size="sm"
+            variant="danger"
           >
             <div className="flex items-center justify-end gap-3">
               <Button variant="ghost" onClick={() => setDeleteTarget(null)}>

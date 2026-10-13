@@ -92,6 +92,93 @@ export type Database = {
         }
         Relationships: []
       }
+      payments: {
+        Row: {
+          amount: number
+          cancel_url: string | null
+          checkout_url: string | null
+          created_at: string | null
+          currency: string
+          id: string
+          metadata: Json | null
+          paid_at: string | null
+          plan: string
+          provider: string
+          provider_checkout_id: string | null
+          provider_event: string | null
+          provider_payment_id: string | null
+          provider_reference: string | null
+          pro_until: string | null
+          return_url: string | null
+          status: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          amount?: number
+          cancel_url?: string | null
+          checkout_url?: string | null
+          created_at?: string | null
+          currency?: string
+          id?: string
+          metadata?: Json | null
+          paid_at?: string | null
+          plan?: string
+          provider?: string
+          provider_checkout_id?: string | null
+          provider_event?: string | null
+          provider_payment_id?: string | null
+          provider_reference?: string | null
+          pro_until?: string | null
+          return_url?: string | null
+          status?: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          cancel_url?: string | null
+          checkout_url?: string | null
+          created_at?: string | null
+          currency?: string
+          id?: string
+          metadata?: Json | null
+          paid_at?: string | null
+          plan?: string
+          provider?: string
+          provider_checkout_id?: string | null
+          provider_event?: string | null
+          provider_payment_id?: string | null
+          provider_reference?: string | null
+          pro_until?: string | null
+          return_url?: string | null
+          status?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          id: string
+          plan: string
+          pro_until: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id: string
+          plan?: string
+          pro_until?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          plan?: string
+          pro_until?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       invoice_items: {
         Row: {
           created_at: string | null
